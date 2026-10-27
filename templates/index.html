@@ -4,32 +4,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Vulcan</title>
+    <title>Project Vulkan</title>
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+
+    <script src="{{ url_for('static', filename='js/navbar.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/home.js') }}" defer></script>
 </head>
 
 <body>
-    <section class="hero" id="hero">
-        <div class="hero-bg">
-            <div class="hero-video">
-            <div class="hero-overlay"></div>
-        </div>
+    <!-- Only icon left: the small dropdown arrow -->
+    <svg class="nav-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <symbol id="i-caret" viewBox="0 0 10 10">
+            <path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </symbol>
+    </svg>
 
-        <div class="hero-content">
-            <h1 class="hero-title">
-                Valley<br><em>Ranch</em>
-            </h1>
-            <p class="hero-subtitle">
-                A master-planned community where scenic canals, rich history,
-                and vibrant neighborhoods come together.
-            </p>
-            <div class="hero-actions">
-                <a href="cool_places/places.html" class="btn-primary">Explore Places ↗</a>
+    <header class="navbar" id="navbar">
+        <nav class="nav-glass" id="navGlass" aria-label="Main">
+
+            <a class="nav-brand" href="/" aria-label="Project Vulkan, home">
+                <span class="nav-brand-text">Project <em>Vulkan</em></span>
+            </a>
+
+            <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navMenu"
+                aria-label="Open menu">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+
+            <ul class="nav-menu" id="navMenu">
+
+                <!-- Crew: a constellation. Every letter is its own star and twinkles on its own beat -->
+                <li>
+                    <a class="nav-link" href="/crew" style="--star:#9ec5ff">
+                        <span class="nav-text fx-crew" data-twinkle>Crew</span>
+                    </a>
+                </li>
+
+                <!-- Technology: a quasar. Blazing white-blue core with a pulsing glow -->
+                <li class="nav-item has-dropdown">
+                    <button class="nav-link nav-dropdown-toggle" type="button" aria-expanded="false"
+                        aria-haspopup="true" aria-controls="techMenu" style="--star:#7ee0ff">
+                        <span class="nav-text fx-quasar">Technology</span>
+                        <svg class="nav-caret" aria-hidden="true">
+                            <use href="#i-caret" />
+                        </svg>
+                    </button>
+                    <ul class="nav-dropdown" id="techMenu">
+                        <li>
+                            <!-- Structure: an asteroid. Rocky and cratered -->
+                            <a class="nav-sublink" href="/technology/structure" style="--star:#d8c3a5">
+                                <span><strong class="nav-text fx-asteroid">Structure</strong><small>The rocket and the
+                                        settlement</small></span>
+                            </a>
+                        </li>
+                        <li>
+                            <!-- Software: a binary star. Two glows circling each other -->
+                            <a class="nav-sublink" href="/technology/software" style="--star:#7ee0ff">
+                                <span><strong class="nav-text fx-binary">Software</strong><small>The code that flies the
+                                        mission</small></span>
+                            </a>
+                        </li>
+                        <li>
+                            <!-- Capsule: a comet. Bright head, fading tail -->
+                            <a class="nav-sublink" href="/technology/capsule" style="--star:#ff8a66">
+                                <span><strong class="nav-text fx-comet">Capsule</strong><small>How the crew gets to
+                                        Mars</small></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Flight Log: an orbit. A tiny body circles the words -->
+                <li>
+                    <a class="nav-link" href="/flight-log" style="--star:#ffd27a">
+                        <span class="nav-text fx-orbit">Flight Log</span>
+                    </a>
+                </li>
+
+                <!-- Trivia: a supernova. Smolders, then flashes -->
+                <li>
+                    <a class="nav-link" href="/trivia" style="--star:#ff8fb8">
+                        <span class="nav-text fx-supernova">Trivia</span>
+                    </a>
+                </li>
+
+                <!-- Learn More: a spiral galaxy. Drifting purple, pink and blue with pinpoint stars -->
+                <li>
+                    <a class="nav-link" href="/learn-more" style="--star:#b9a4ff">
+                        <span class="nav-text fx-galaxy">Learn More</span>
+                    </a>
+                </li>
+
+                <!-- Help: the North Star. Steady guiding light with a twinkle -->
+                <li>
+                    <a class="nav-link" href="/help" style="--star:#fff1a8">
+                        <span class="nav-text fx-northstar">Help</span>
+                    </a>
+                </li>
+
+                <!-- Reference: the Moon. Light slowly sweeps across it like a changing phase -->
+                <li>
+                    <a class="nav-link" href="/reference" style="--star:#cfd8ea">
+                        <span class="nav-text fx-moon">Reference</span>
+                    </a>
+                </li>
+
+                <!-- Solar System: a ringed planet. Banded gas giant with a ring through it -->
+                <li>
+                    <a class="nav-link" href="/solar-system" style="--star:#ffa866">
+                        <span class="nav-text fx-planet">Solar System</span>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- Tall track: scrolling through it drives the transition while the stage stays pinned -->
+        <div class="stage-track" id="stageTrack">
+            <div class="stage" id="stage">
+
+                <!-- ══ HERO ══ -->
+                <section class="hero" id="hero">
+                    <div class="hero-bg">
+                        <video class="hero-video" id="heroVideo" autoplay muted playsinline>
+                            <source src="{{ url_for('static', filename='videos/rocket-launch.mp4') }}" type="video/mp4">
+                        </video>
+                        <div class="hero-overlay"></div>
+                    </div>
+
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Project<br><em>Vulkan</em>
+                        </h1>
+                        <p class="hero-subtitle">
+                            <b>Mission Brief:</b> Send the first people to Mars, build a settlement as our base of
+                            operations,
+                            retrieve the two active rovers, and research the planet to find a way to terraform it for
+                            human
+                            habitation.
+                        </p>
+                        <button class="sound-btn" id="soundBtn" type="button" aria-pressed="false">
+                            🔇 Tap for sound
+                        </button>
+                    </div>
+
+                    <button class="scroll-cue" id="scrollCue" type="button" aria-label="Scroll down">
+                        <span class="scroll-cue-text">Scroll down</span>
+                        <span class="scroll-cue-arrow" aria-hidden="true">↓</span>
+                    </button>
+                </section>
+
+                <!-- ══ SHOWCASE (slideshow + shrinking rocket) ══ -->
+                <section class="showcase" id="showcase" aria-label="Mission image slideshow">
+                    <div class="slides">
+                        {% for i in range(1, 11) %}
+                        <img class="slide{{ ' active' if i == 1 else '' }}"
+                            src="{{ url_for('static', filename='images/slides/slide-' ~ i ~ '.jpg') }}"
+                            alt="Mission image {{ i }}">
+                        {% endfor %}
+                    </div>
+
+                    <img class="rocket" id="rocket" src="{{ url_for('static', filename='images/rocket.png') }}" alt=""
+                        aria-hidden="true">
+
+                    <button class="slide-arrow slide-arrow-prev" id="slidePrev" type="button"
+                        aria-label="Previous image">&#10094;</button>
+                    <button class="slide-arrow slide-arrow-next" id="slideNext" type="button"
+                        aria-label="Next image">&#10095;</button>
+
+                    <div class="slide-dots" id="slideDots">
+                        {% for i in range(1, 11) %}
+                        <button class="slide-dot" type="button" aria-label="Go to image {{ i }}"></button>
+                        {% endfor %}
+                    </div>
+                </section>
+
             </div>
         </div>
 
-    </section>
+    </main>
+
 </body>
+
 </html>

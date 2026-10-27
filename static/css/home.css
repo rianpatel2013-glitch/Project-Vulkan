@@ -1,0 +1,438 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* ══════════════════════════════════════
+   HOME PAGE — Project Vulkan
+   (same structure as Visit Valley Ranch hero)
+══════════════════════════════════════ */
+
+/* ─── Base ─── */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    color: #f4eed8;
+    background-color: #060d24;
+    overflow: auto;
+}
+
+/* Webpage Opening Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+main {
+    animation: fadeIn 0.5s ease-in forwards;
+    overflow-x: clip;
+}
+
+
+/* ══════════════════════════════════════
+   PINNED STAGE — hero and slideshow share one screen
+══════════════════════════════════════ */
+.stage-track {
+    position: relative;
+    height: 180svh;
+    /* scrolling only TRIGGERS the transition; this is just how long the stage stays pinned */
+}
+
+.stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+}
+
+/* ─── Hero Section ─── */
+.hero {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: #060d24;
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Dark gradient overlay */
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    /* Top edge 50%, bottom edge 80% (keeps the text readable) */
+    background:
+        linear-gradient(to bottom,
+            rgba(6, 13, 36, 0.5) 0%,
+            rgba(6, 13, 36, 0.3) 45%,
+            rgba(6, 13, 36, 0.3) 55%,
+            rgba(6, 13, 36, 0.8) 100%);
+}
+
+/* Decorative grain texture */
+.hero-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 clamp(2rem, 6vw, 5rem) clamp(4rem, 8vh, 7rem);
+    max-width: 900px;
+    transition: opacity 0.6s ease;
+}
+
+/* Triggered by scrolling (see home.js) */
+.stage.text-out .hero-content {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.2rem, 8.5vw, 7.5rem);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    color: #f4eed8;
+    margin-bottom: 0.7rem;
+    text-shadow: 0 2px 24px rgba(6, 13, 36, 0.6);
+}
+
+/* "Vulkan": Mars-red lava gradient with a flickering fire glow */
+.hero-title em {
+    font-style: italic;
+    display: inline-block;
+    /* room so the gradient isn't clipped at the italic edges / descenders */
+    padding: 0.05em 0.12em 0.14em 0;
+    margin-bottom: -0.14em;
+
+    background: linear-gradient(to top,
+            #5c0a03 0%,
+            #9c1a0a 25%,
+            #c1280e 50%,
+            /* Mars red */
+            #e0361a 75%,
+            #ff5a3c 100%);
+    background-size: 100% 220%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+
+    animation:
+        fireFlow 2.4s ease-in-out infinite alternate,
+        fireFlicker 1.3s linear infinite;
+}
+
+/* Flames licking up through the letters */
+@keyframes fireFlow {
+    from {
+        background-position: 0 0%;
+    }
+
+    to {
+        background-position: 0 100%;
+    }
+}
+
+/* Uneven, flickering glow around the letters */
+@keyframes fireFlicker {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 6px rgba(230, 30, 20, 0.70)) drop-shadow(0 -4px 16px rgba(240, 70, 30, 0.45));
+    }
+
+    18% {
+        filter: drop-shadow(0 0 10px rgba(225, 25, 15, 0.85)) drop-shadow(0 -6px 22px rgba(245, 80, 30, 0.65));
+    }
+
+    37% {
+        filter: drop-shadow(0 0 5px rgba(235, 35, 20, 0.60)) drop-shadow(0 -3px 12px rgba(238, 65, 28, 0.40));
+    }
+
+    52% {
+        filter: drop-shadow(0 0 12px rgba(220, 20, 10, 0.90)) drop-shadow(0 -7px 26px rgba(250, 90, 35, 0.70));
+    }
+
+    73% {
+        filter: drop-shadow(0 0 7px rgba(230, 30, 20, 0.70)) drop-shadow(0 -4px 15px rgba(240, 70, 30, 0.50));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-title em {
+        animation: none;
+        filter: drop-shadow(0 0 8px rgba(230, 30, 20, 0.6));
+    }
+}
+
+.hero-subtitle {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+    font-weight: 300;
+    color: rgba(244, 238, 216, 0.65);
+    max-width: 480px;
+    line-height: 1.7;
+    margin-bottom: 1.4rem;
+    text-shadow: 0 1px 14px rgba(6, 13, 36, 0.7);
+}
+
+/* "Mission Brief:" label. The subtitle is weight 300, so the browser's default bold only
+   goes up to 400. Setting 700 explicitly makes it clearly stand out. */
+.hero-subtitle b {
+    font-weight: 700;
+}
+
+/* ─── Sound Button ─── */
+.sound-btn {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f4eed8;
+    background: rgba(244, 238, 216, 0.12);
+    border: 1px solid rgba(244, 238, 216, 0.4);
+    border-radius: 999px;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.sound-btn:hover {
+    background: rgba(244, 238, 216, 0.25);
+}
+
+/* ─── Scroll Down Cue ─── */
+.scroll-cue {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #f4eed8;
+    font-family: 'Outfit', sans-serif;
+    animation: bob 1.8s ease-in-out infinite;
+
+    /* Hidden until the video ends (or the visitor has been here before) */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.8s ease, visibility 0.8s;
+}
+
+.scroll-cue.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.scroll-cue-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+.scroll-cue-arrow {
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+@keyframes bob {
+
+    0%,
+    100% {
+        transform: translate(-50%, 0);
+    }
+
+    50% {
+        transform: translate(-50%, 10px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scroll-cue {
+        animation: none;
+    }
+}
+
+/* ══════════════════════════════════════
+   SHOWCASE — slideshow + shrinking rocket
+══════════════════════════════════════ */
+.showcase {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    overflow: hidden;
+    background: #060d24;
+    cursor: pointer;
+    visibility: hidden;
+    /* appears instantly (no fade) once scrolling reaches it */
+}
+
+.showcase.revealed {
+    visibility: visible;
+}
+
+.slides {
+    position: absolute;
+    inset: 0;
+}
+
+.slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.slide.active {
+    opacity: 1;
+}
+
+/* Rocket: line this up with where the rocket sits in the LAST frame of the hero video.
+   Tweak these three variables until it matches. */
+.rocket {
+    --rocket-x: 50%;
+    /* horizontal center */
+    --rocket-y: 8%;
+    /* distance from the bottom */
+    --rocket-h: 75%;
+    /* starting height (share of the section) */
+
+    position: absolute;
+    z-index: 2;
+    left: var(--rocket-x);
+    bottom: var(--rocket-y);
+    height: var(--rocket-h);
+    width: auto;
+    max-width: none;
+    translate: -50% 0;
+    /* centers it without being affected by the scale animation */
+    transform-origin: 50% 50%;
+    pointer-events: none;
+}
+
+/* Arrows */
+.slide-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(244, 238, 216, 0.4);
+    background: rgba(6, 13, 36, 0.5);
+    color: #f4eed8;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.slide-arrow:hover {
+    background: rgba(6, 13, 36, 0.85);
+}
+
+.slide-arrow-prev {
+    left: clamp(0.75rem, 3vw, 2rem);
+}
+
+.slide-arrow-next {
+    right: clamp(0.75rem, 3vw, 2rem);
+}
+
+/* Dots */
+.slide-dots {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    gap: 0.6rem;
+}
+
+.slide-dot {
+    width: 12px;
+    height: 12px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(244, 238, 216, 0.7);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.25s, width 0.25s;
+}
+
+.slide-dot:hover {
+    background: rgba(244, 238, 216, 0.4);
+}
+
+.slide-dot.active {
+    background: #f4eed8;
+    width: 28px;
+}
+
+
+/* Slideshow buttons start hidden; the scroll trigger fades them in (see home.js) */
+.slide-arrow,
+.slide-dots {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, background 0.2s;
+}
+
+.stage.controls-in .slide-arrow,
+.stage.controls-in .slide-dots {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 1.4s ease, background 0.2s;
+    /* slow fade-in; keep START_MS in home.js in sync */
+}

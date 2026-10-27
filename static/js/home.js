@@ -1,0 +1,286 @@
+'use strict';
+
+const hero = document.getElementById('hero');
+const heroVideo = document.getElementById('heroVideo');
+const heroContent = document.querySelector('.hero-content');
+const soundBtn = document.getElementById('soundBtn');
+const scrollCue = document.getElementById('scrollCue');
+const track = document.getElementById('stageTrack');
+const stage = document.getElementById('stage');
+const showcase = document.getElementById('showcase');
+
+const clamp01 = (n) => Math.min(1, Math.max(0, n));
+
+// ── Scroll trigger ─────────────────────────────────────────────
+// Scrolling only STARTS the transition; it then plays on a fixed timer, so it looks the
+// same whether the visitor scrolls fast or slow. (progress goes 0 → 1 through the pinned stage.)
+const ENTER_AT = 0.06;   // scroll progress that starts the transition
+const EXIT_AT = 0.02;    // scroll back above this to reverse it (gap avoids flickering)
+
+// Timeline, in milliseconds after the trigger
+const REVEAL_MS = 550;   // hero video cuts to the slideshow (text fade takes 0.6s, see CSS)
+const CONTROLS_MS = 600; // slideshow buttons start fading in (1.4s fade, see CSS)
+const START_MS = 2000;   // buttons fully in place (CONTROLS_MS + fade length); slideshow starts
+const EXIT_MS = 300;     // on reverse: buttons fade out first, then the hero returns
+
+// Set to true once the hero video finishes, so nothing restarts it by accident
+let videoEnded = false;
+
+// ── Scroll cue visibility ──────────────────────────────────────
+// Returning visitors already know to scroll, so show it right away for them.
+// First-timers only see it after the intro video finishes.
+// It also hides itself as soon as the visitor starts scrolling.
+const SEEN_KEY = 'vulkanIntroSeen';
+let cueReady = false;
+
+function hasSeenIntro() {
+    try { return localStorage.getItem(SEEN_KEY) === '1'; }
+    catch (e) { return false; }
+}
+
+function markIntroSeen() {
+    try { localStorage.setItem(SEEN_KEY, '1'); }
+    catch (e) { /* storage blocked, ignore */ }
+}
+
+function refreshScrollCue() {
+    if (scrollCue) scrollCue.classList.toggle('visible', cueReady && window.scrollY < 20);
+}
+
+function showScrollCue() {
+    cueReady = true;
+    refreshScrollCue();
+}
+
+if (hasSeenIntro()) showScrollCue();
+
+// ── Hero video ─────────────────────────────────────────────────
+if (heroVideo) {
+    // Video always starts muted (required for autoplay)
+    heroVideo.muted = true;
+
+    heroVideo.addEventListener('ended', () => {
+        videoEnded = true;
+        heroVideo.pause(); // stays on the last frame
+        showScrollCue();
+        markIntroSeen();
+    });
+
+    // If the video can't load, don't leave the visitor without the cue
+    heroVideo.addEventListener('error', showScrollCue);
+
+    // ── Play/pause based on visibility ─────────────────────────
+    const videoObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                if (!videoEnded && !(showcase && showcase.classList.contains('revealed'))) {
+                    heroVideo.play().catch(() => { });
+                }
+            } else {
+                heroVideo.pause();
+            }
+        });
+    }, { threshold: 0.5 });
+
+    videoObserver.observe(heroVideo);
+
+    // ── Sound: ONLY turns on/off via the button ────────────────
+    if (soundBtn) {
+        soundBtn.addEventListener('click', () => {
+            heroVideo.muted = !heroVideo.muted;
+
+            if (!videoEnded) {
+                heroVideo.play().catch(() => {
+                    // Browser refused sound, fall back to muted
+                    heroVideo.muted = true;
+                });
+            }
+
+            const soundOn = !heroVideo.muted;
+            soundBtn.textContent = soundOn ? '🔊 Tap to mute' : '🔇 Tap for sound';
+            soundBtn.setAttribute('aria-pressed', soundOn);
+        });
+    }
+
+    // ── Click hero to play/pause (or replay after it ended) ────
+    if (hero) {
+        hero.addEventListener('click', (e) => {
+            // Don't toggle if clicking on interactive elements
+            if (e.target.closest('button, a, input')) return;
+
+            if (videoEnded) {
+                videoEnded = false;
+                heroVideo.currentTime = 0;
+                heroVideo.play().catch(() => { });
+            } else if (heroVideo.paused) {
+                heroVideo.play().catch(() => { });
+            } else {
+                heroVideo.pause();
+            }
+        });
+
+        hero.style.cursor = 'pointer';
+    }
+}
+
+// ── Scroll helpers for the pinned stage ────────────────────────
+function scrollRange() {
+    return track.offsetHeight - window.innerHeight;
+}
+
+function scrollProgress() {
+    const range = scrollRange();
+    if (range <= 0) return 0;
+    return clamp01(-track.getBoundingClientRect().top / range);
+}
+
+// ── Scroll down cue ────────────────────────────────────────────
+if (scrollCue && track) {
+    scrollCue.addEventListener('click', () => {
+        const trackTop = track.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+            top: trackTop + scrollRange() * (ENTER_AT + 0.04),
+            behavior: 'smooth'
+        });
+    });
+}
+
+// ══ SHOWCASE: slideshow + shrinking rocket ═════════════════════
+if (showcase && track) {
+    const SLIDE_MS = 2500;   // time each image stays on screen
+    const MIN_SCALE = 0.15;  // rocket size at the very end (1 = size at the end of the video)
+
+    const slides = showcase.querySelectorAll('.slide');
+    const dots = showcase.querySelectorAll('.slide-dot');
+    const rocket = document.getElementById('rocket');
+    const total = slides.length;
+
+    let current = 0;
+    let anim = null;        // the rocket animation for the current slide
+    let inView = false;     // buttons are in place, so the slideshow may run
+    let userPaused = false; // did the visitor click to pause?
+    let showReady = false;  // transition finished, so the slideshow may run
+    let inShow = false;     // transition triggered (hero → slideshow)
+    let timers = [];
+
+    // Rocket size at the START of slide i. It shrinks steadily across all slides,
+    // so slide i ends at the same size slide i+1 starts at.
+    const scaleAt = (i) => 1 - (1 - MIN_SCALE) * (i / total);
+
+    // Play only while the buttons are in place and the visitor hasn't paused it
+    function sync() {
+        if (!anim) return;
+        if (inView && !userPaused) anim.play();
+        else anim.pause();
+    }
+
+    function goTo(index) {
+        current = (index + total) % total;
+
+        slides.forEach((s, i) => s.classList.toggle('active', i === current));
+        dots.forEach((d, i) => {
+            d.classList.toggle('active', i === current);
+            d.setAttribute('aria-current', i === current ? 'true' : 'false');
+        });
+
+        if (anim) {
+            anim.onfinish = null;
+            anim.cancel();
+        }
+
+        // The rocket animation doubles as the timer: when it finishes, the next slide starts.
+        // Pausing the animation therefore pauses the whole slideshow.
+        anim = rocket.animate(
+            [{ scale: scaleAt(current) }, { scale: scaleAt(current + 1) }],
+            { duration: SLIDE_MS, easing: 'linear', fill: 'forwards' }
+        );
+        anim.onfinish = () => goTo(current + 1);
+        sync();
+    }
+
+    document.getElementById('slidePrev').addEventListener('click', () => goTo(current - 1));
+    document.getElementById('slideNext').addEventListener('click', () => goTo(current + 1));
+    dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+
+    // Click anywhere else on the slideshow to pause/resume
+    showcase.addEventListener('click', (e) => {
+        if (e.target.closest('button')) return;
+        userPaused = !userPaused;
+        sync();
+    });
+
+    // ── Timed transition, triggered by scrolling ───────────────
+    // 1. Hero text fades out.
+    // 2. The hero video cuts to the slideshow (no fade, it just appears, paused).
+    // 3. The slideshow buttons fade in.
+    // 4. Once the buttons are fully in place, the slideshow starts.
+    const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+    const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+
+    // The slideshow runs only once the transition is done AND the stage is still mostly on screen
+    function updateInView() {
+        const stageBottom = track.getBoundingClientRect().bottom;
+        inView = showReady && stageBottom > window.innerHeight * 0.5;
+    }
+
+    function enterShow() {
+        inShow = true;
+        clearTimers();
+
+        stage.classList.add('text-out');                                   // 1
+
+        later(() => {                                                      // 2
+            showcase.classList.add('revealed');
+            if (heroVideo) heroVideo.pause();
+        }, REVEAL_MS);
+
+        later(() => stage.classList.add('controls-in'), CONTROLS_MS);      // 3
+
+        later(() => { showReady = true; updateInView(); sync(); }, START_MS); // 4
+    }
+
+    function exitShow() {
+        inShow = false;
+        clearTimers();
+
+        showReady = false;
+        updateInView();
+        sync();                                  // freeze the slideshow
+        stage.classList.remove('controls-in');   // buttons fade out first
+
+        later(() => {
+            showcase.classList.remove('revealed');
+            stage.classList.remove('text-out');  // hero text fades back in
+            if (heroVideo && !videoEnded) heroVideo.play().catch(() => { });
+        }, EXIT_MS);
+    }
+
+    function onScroll() {
+        const progress = scrollProgress();
+
+        if (!inShow && progress >= ENTER_AT) enterShow();
+        else if (inShow && progress < EXIT_AT) exitShow();
+
+        // Stop the slideshow once the stage has scrolled mostly out of view
+        updateInView();
+        sync();
+
+        refreshScrollCue();
+    }
+
+    let scrollTicking = false;
+    const requestScrollUpdate = () => {
+        if (scrollTicking) return;
+        scrollTicking = true;
+        requestAnimationFrame(() => {
+            scrollTicking = false;
+            onScroll();
+        });
+    };
+
+    window.addEventListener('scroll', requestScrollUpdate, { passive: true });
+    window.addEventListener('resize', requestScrollUpdate);
+
+    goTo(0);
+    onScroll();
+}

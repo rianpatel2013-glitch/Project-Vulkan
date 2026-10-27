@@ -1,0 +1,761 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Outfit:wght@400;500;600;700&display=swap');
+
+.nav-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* ─── The glass bar: edge to edge, touching the top ─── */
+.nav-glass {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 0.5rem clamp(1.25rem, 3.5vw, 3rem);
+    background: linear-gradient(180deg, rgba(16, 32, 84, 0.5), rgba(6, 13, 36, 0.5));
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: 0 10px 30px rgba(0, 0, 10, 0.28);
+    transition: background 0.3s ease;
+}
+
+/* A single glowing hairline along the bottom edge: starlight blue fading through Mars red */
+.nav-glass::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(130, 180, 255, 0.55) 22%,
+            rgba(255, 110, 80, 0.6) 50%,
+            rgba(130, 180, 255, 0.55) 78%,
+            transparent 100%);
+}
+
+/* Browsers without backdrop-filter get a more solid bar so text stays readable */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .nav-glass {
+        background: rgba(6, 13, 36, 0.93);
+    }
+}
+
+/* Slightly more solid once the page has been scrolled */
+.navbar.scrolled .nav-glass {
+    background: linear-gradient(180deg, rgba(16, 32, 84, 0.6), rgba(6, 13, 36, 0.78));
+}
+
+/* Tiny twinkling stars inside the glass */
+.nav-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(1px 1px at 8% 30%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(1px 1px at 19% 72%, rgba(190, 215, 255, 0.8), transparent),
+        radial-gradient(1.2px 1.2px at 33% 22%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(1px 1px at 47% 80%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1px 1px at 61% 28%, rgba(190, 215, 255, 0.9), transparent),
+        radial-gradient(1.2px 1.2px at 74% 70%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(1px 1px at 88% 25%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(1px 1px at 95% 75%, rgba(190, 215, 255, 0.8), transparent);
+    opacity: 0.55;
+    animation: navTwinkle 4.5s ease-in-out infinite alternate;
+}
+
+@keyframes navTwinkle {
+    from {
+        opacity: 0.25;
+    }
+
+    to {
+        opacity: 0.7;
+    }
+}
+
+.nav-brand,
+.nav-toggle,
+.nav-menu {
+    position: relative;
+    z-index: 1;
+    /* above the star layer */
+}
+
+/* ─── Brand ─── */
+.nav-brand {
+    flex: none;
+    text-decoration: none;
+    color: #f4eed8;
+    border-radius: 999px;
+}
+
+.nav-brand-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.nav-brand-text em {
+    font-style: normal;
+    font-weight: 700;
+    background: linear-gradient(to top, #9c1a0a, #e0361a 55%, #ff7a4a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    padding-right: 0.08em;
+}
+
+.nav-brand:focus-visible,
+.nav-link:focus-visible,
+.nav-sublink:focus-visible,
+.nav-toggle:focus-visible {
+    outline: 2px solid var(--star, #cfe0ff);
+    outline-offset: 2px;
+}
+
+/* ─── Menu (desktop) ─── */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem clamp(0.55rem, 0.9vw, 1rem);
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: #f4eed8;
+    font-family: inherit;
+    font-size: clamp(1rem, 0.5vw + 0.68rem, 1.2rem);
+    /* about 17px at 1280px wide, up to 19px on big screens */
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.nav-caret {
+    width: 11px;
+    height: 11px;
+    flex: none;
+    color: #cfe0ff;
+    opacity: 0.8;
+    transition: transform 0.25s ease;
+}
+
+.nav-dropdown-toggle[aria-expanded="true"] .nav-caret {
+    transform: rotate(180deg);
+}
+
+/* Hover / focus: a thin trail of the page's star color glows underneath */
+.nav-link::before {
+    content: '';
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    bottom: 2px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, var(--star, #cfe0ff), transparent);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover::before,
+.nav-link:focus-visible::before,
+.nav-dropdown-toggle[aria-expanded="true"]::before {
+    transform: scaleX(1);
+}
+
+/* Current page: a small glowing star underneath ("you are here") */
+.nav-link[aria-current="page"]::after,
+.nav-link.is-current-parent::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 1px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--star, #cfe0ff);
+    box-shadow: 0 0 8px 2px var(--star, #cfe0ff);
+    transform: translateX(-50%);
+}
+
+/* ══════════════════════════════════════
+   PAGE TITLES AS CELESTIAL OBJECTS
+══════════════════════════════════════ */
+
+.nav-text {
+    position: relative;
+    display: inline-block;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    line-height: 1.25;
+}
+
+/* ── Crew: a constellation. Each letter is a star twinkling on its own beat ── */
+.fx-crew {
+    color: #cfe0ff;
+}
+
+.nav-letter {
+    display: inline-block;
+    animation: starTwinkle 3.2s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.83s);
+}
+
+@keyframes starTwinkle {
+
+    0%,
+    100% {
+        color: #94b8ff;
+        text-shadow: none;
+    }
+
+    40% {
+        color: #ffffff;
+        text-shadow: 0 0 6px #9ec5ff, 0 0 14px #6a9cff;
+    }
+
+    60% {
+        color: #bcd3ff;
+        text-shadow: 0 0 3px #7fa8ff;
+    }
+}
+
+/* ── Technology: a quasar. Blazing core, pulsing glow ── */
+.fx-quasar {
+    background: radial-gradient(ellipse 70% 130% at 50% 50%, #ffffff 0%, #bff4ff 30%, #52c6ff 68%, #3a92ff 100%);
+    animation: quasarPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes quasarPulse {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 3px rgba(90, 200, 255, 0.5));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 9px rgba(130, 228, 255, 0.95));
+    }
+}
+
+/* ── Flight Log: an orbit. A tiny body circles the words ── */
+.fx-orbit {
+    background: linear-gradient(90deg, #fff4cc, #ffd37a 60%, #ffb347);
+}
+
+.fx-orbit::after {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: -6px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ffe08a;
+    box-shadow: 0 0 6px 2px rgba(255, 208, 110, 0.85);
+    pointer-events: none;
+    /* x and y move on the same smooth curve a quarter-turn apart, which traces an ellipse */
+    animation:
+        orbitX 3.2s cubic-bezier(0.37, 0, 0.63, 1) infinite alternate,
+        orbitY 3.2s cubic-bezier(0.37, 0, 0.63, 1) -1.6s infinite alternate;
+}
+
+@keyframes orbitX {
+    from {
+        left: -8px;
+    }
+
+    to {
+        left: calc(100% + 3px);
+    }
+}
+
+@keyframes orbitY {
+    from {
+        top: -6px;
+    }
+
+    to {
+        top: calc(100% - 2px);
+    }
+}
+
+/* ── Trivia: a supernova. Smolders, then a sudden flash ── */
+.fx-supernova {
+    background: linear-gradient(90deg, #ffe0ef, #ff86bf 45%, #ff5a7a 75%, #ffb07a);
+    animation: supernova 3.8s ease-out infinite;
+}
+
+@keyframes supernova {
+
+    0%,
+    68%,
+    100% {
+        filter: drop-shadow(0 0 3px rgba(255, 110, 170, 0.5));
+        transform: scale(1);
+    }
+
+    72% {
+        filter: drop-shadow(0 0 3px #ffffff) drop-shadow(0 0 16px rgba(255, 120, 180, 1)) brightness(1.5);
+        transform: scale(1.1);
+    }
+
+    88% {
+        filter: drop-shadow(0 0 8px rgba(255, 110, 170, 0.7));
+        transform: scale(1.03);
+    }
+}
+
+/* ── Learn More: a spiral galaxy. Drifting colors with pinpoint stars ── */
+.fx-galaxy {
+    background:
+        radial-gradient(1px 1px at 15% 30%, #fff 50%, transparent),
+        radial-gradient(1px 1px at 38% 72%, #fff 50%, transparent),
+        radial-gradient(1.2px 1.2px at 62% 25%, #fff 50%, transparent),
+        radial-gradient(1px 1px at 85% 66%, #fff 50%, transparent),
+        linear-gradient(100deg, #8f72ff, #d476ff, #ff80cc, #72bcff, #8f72ff);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 240px 100%;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat-x;
+    animation: galaxyDrift 9s linear infinite;
+}
+
+@keyframes galaxyDrift {
+    from {
+        background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
+    }
+
+    to {
+        background-position: 0 0, 0 0, 0 0, 0 0, 240px 0;
+    }
+}
+
+/* ── Help: the North Star. Steady guiding light with a twinkle ── */
+.fx-northstar {
+    background: linear-gradient(#ffffff, #fff3b0 60%, #ffe27a);
+    filter: drop-shadow(0 0 5px rgba(255, 241, 168, 0.65));
+    animation: northGlow 3.4s ease-in-out infinite;
+}
+
+.fx-northstar::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    right: -9px;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    background:
+        linear-gradient(#fff, #fff) center / 1px 100% no-repeat,
+        linear-gradient(#fff, #fff) center / 100% 1px no-repeat,
+        radial-gradient(circle, rgba(255, 241, 168, 0.9) 0, transparent 60%);
+    animation: sparkle 3.4s ease-in-out infinite;
+}
+
+@keyframes northGlow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 4px rgba(255, 241, 168, 0.5));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 9px rgba(255, 241, 168, 0.95));
+    }
+}
+
+@keyframes sparkle {
+
+    0%,
+    100% {
+        opacity: 0.25;
+        transform: scale(0.6);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+}
+
+/* ── Reference: the Moon. Light sweeps across like a changing phase ── */
+.fx-moon {
+    background: linear-gradient(100deg, #f6f8ff 0%, #dfe5f7 38%, #9aa5c2 64%, #8590ae 100%);
+    background-size: 220% 100%;
+    filter: drop-shadow(0 0 5px rgba(215, 225, 255, 0.3));
+    animation: moonPhase 12s ease-in-out infinite alternate;
+}
+
+@keyframes moonPhase {
+    from {
+        background-position: 0% 0;
+    }
+
+    to {
+        background-position: 100% 0;
+    }
+}
+
+/* ── Solar System: a ringed planet. Banded gas giant with a ring through it ── */
+.fx-planet {
+    background: repeating-linear-gradient(to bottom,
+            #ffe2b0 0 2px,
+            #f0b46a 2px 4px,
+            #d98a47 4px 5px,
+            #f7cf94 5px 7px);
+}
+
+.fx-planet::after {
+    content: '';
+    position: absolute;
+    left: -9px;
+    right: -9px;
+    top: 50%;
+    height: 12px;
+    margin-top: -6px;
+    border: 1px solid rgba(255, 206, 140, 0.6);
+    border-radius: 50%;
+    transform: rotate(-8deg);
+    pointer-events: none;
+}
+
+/* ── Technology dropdown items ── */
+
+/* Structure: an asteroid. Rocky and cratered */
+.fx-asteroid {
+    background:
+        radial-gradient(circle at 18% 45%, #7a6a58 0 1px, transparent 1.6px),
+        radial-gradient(circle at 52% 70%, #7a6a58 0 1.1px, transparent 1.7px),
+        radial-gradient(circle at 78% 35%, #7a6a58 0 1px, transparent 1.6px),
+        radial-gradient(circle at 38% 25%, #7a6a58 0 0.8px, transparent 1.4px),
+        linear-gradient(#f2e0c4, #c7ae8f);
+}
+
+/* Software: a binary star. Two glows circling each other */
+.fx-binary {
+    background: linear-gradient(90deg, #9ceaff, #ffffff 50%, #ffd29a);
+    animation: binaryOrbit 4s ease-in-out infinite alternate;
+}
+
+@keyframes binaryOrbit {
+    from {
+        filter: drop-shadow(-3px 0 4px rgba(110, 215, 255, 0.65)) drop-shadow(3px 0 4px rgba(255, 170, 90, 0.65));
+    }
+
+    to {
+        filter: drop-shadow(3px 0 4px rgba(110, 215, 255, 0.65)) drop-shadow(-3px 0 4px rgba(255, 170, 90, 0.65));
+    }
+}
+
+/* Capsule: a comet. Dim warm tail on the left, bright head on the right */
+.fx-comet {
+    background: linear-gradient(90deg, rgba(255, 138, 102, 0.6) 0%, #ff9d78 40%, #ffeadd 85%, #ffffff 100%);
+}
+
+/* ── Gradient-filled lettering: the gradient shows through the letters only.
+   This must come AFTER the effects above, because each effect's "background:" shorthand
+   would otherwise reset background-clip. ── */
+.fx-quasar,
+.fx-orbit,
+.fx-supernova,
+.fx-galaxy,
+.fx-northstar,
+.fx-moon,
+.fx-planet,
+.fx-asteroid,
+.fx-binary,
+.fx-comet {
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ─── Dropdown (Technology) ─── */
+.nav-dropdown {
+    position: absolute;
+    top: calc(100% + 14px);
+    left: 50%;
+    min-width: 300px;
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem;
+    border-radius: 18px;
+    /* Opaque-ish on purpose: a blurred panel inside a blurred bar doesn't blur in most browsers */
+    background: linear-gradient(135deg, rgba(20, 40, 105, 0.97), rgba(8, 16, 44, 0.98));
+    border: 1px solid rgba(180, 205, 255, 0.25);
+    box-shadow: 0 18px 40px rgba(0, 0, 10, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+}
+
+/* invisible bridge so the pointer can cross the gap without the menu closing */
+.nav-dropdown::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -16px;
+    height: 16px;
+}
+
+.has-dropdown.open .nav-dropdown {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.nav-sublink {
+    display: block;
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    color: rgba(244, 238, 216, 0.92);
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.nav-sublink:hover,
+.nav-sublink:focus-visible,
+.nav-sublink[aria-current="page"] {
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.nav-sublink strong {
+    display: block;
+    width: fit-content;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.nav-sublink small {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.85rem;
+    color: rgba(244, 238, 216, 0.7);
+}
+
+/* ─── Hamburger (hidden on desktop) ─── */
+.nav-toggle {
+    display: none;
+    width: 42px;
+    height: 42px;
+    flex: none;
+    padding: 0;
+    border: 1px solid rgba(180, 205, 255, 0.25);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.nav-toggle-bar {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: #f4eed8;
+    transition: transform 0.25s ease, opacity 0.2s ease;
+}
+
+.nav-glass.menu-open .nav-toggle-bar:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.nav-glass.menu-open .nav-toggle-bar:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-glass.menu-open .nav-toggle-bar:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ══ Tablet & phone: collapse into a menu ══ */
+@media (max-width: 1060px) {
+    .nav-toggle {
+        display: flex;
+    }
+
+    /* the menu drops straight out of the bar, full width */
+    .nav-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.15rem;
+        max-height: calc(100svh - 70px);
+        overflow-y: auto;
+        padding: 0.6rem clamp(0.6rem, 3vw, 1.5rem) 0.9rem;
+        border-radius: 0 0 24px 24px;
+        background: linear-gradient(135deg, rgba(20, 40, 105, 0.985), rgba(8, 16, 44, 0.99));
+        border-bottom: 1px solid rgba(180, 205, 255, 0.25);
+        box-shadow: 0 18px 40px rgba(0, 0, 10, 0.55);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-8px);
+        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    }
+
+    .nav-glass.menu-open .nav-menu {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+
+    .nav-link {
+        width: 100%;
+        padding: 0.85rem 0.9rem;
+        border-radius: 14px;
+        font-size: 1.2rem;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus-visible,
+    .nav-dropdown-toggle[aria-expanded="true"] {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-dropdown-toggle {
+        justify-content: flex-start;
+    }
+
+    .nav-dropdown-toggle .nav-caret {
+        margin-left: auto;
+    }
+
+    /* the underline trail doesn't suit a vertical list */
+    .nav-link::before {
+        display: none;
+    }
+
+    /* "you are here" dot moves to the right edge in the vertical list */
+    .nav-link[aria-current="page"]::after,
+    .nav-link.is-current-parent::after {
+        left: auto;
+        right: 0.9rem;
+        bottom: 50%;
+        transform: translateY(50%);
+    }
+
+    .nav-link.is-current-parent .nav-caret {
+        margin-right: 1.1rem;
+    }
+
+    /* Technology expands inline instead of floating */
+    .nav-dropdown {
+        position: static;
+        min-width: 0;
+        max-height: 0;
+        overflow: hidden;
+        padding: 0 0 0 1.1rem;
+        border: 0;
+        border-radius: 0;
+        background: none;
+        box-shadow: none;
+        opacity: 1;
+        visibility: hidden;
+        pointer-events: auto;
+        transform: none;
+        transition: max-height 0.3s ease, visibility 0.3s;
+    }
+
+    .nav-dropdown::before {
+        display: none;
+    }
+
+    .has-dropdown.open .nav-dropdown {
+        max-height: 320px;
+        visibility: visible;
+        padding-bottom: 0.3rem;
+        transform: none;
+    }
+
+    .nav-sublink {
+        padding: 0.7rem 0.9rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .nav-brand-text {
+        font-size: 1.25rem;
+    }
+}
+
+/* Calm everything down for visitors who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+
+    .nav-glass::before,
+    .nav-letter,
+    .fx-quasar,
+    .fx-orbit::after,
+    .fx-supernova,
+    .fx-galaxy,
+    .fx-northstar,
+    .fx-northstar::after,
+    .fx-moon,
+    .fx-binary {
+        animation: none;
+    }
+
+    .fx-orbit::after {
+        display: none;
+    }
+
+    .nav-letter {
+        color: #cfe0ff;
+    }
+
+    .nav-caret,
+    .nav-dropdown,
+    .nav-menu,
+    .nav-toggle-bar {
+        transition: none;
+    }
+}
