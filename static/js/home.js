@@ -11,17 +11,17 @@ const showcase = document.getElementById('showcase');
 
 const clamp01 = (n) => Math.min(1, Math.max(0, n));
 
-// ── Scroll trigger ─────────────────────────────────────────────
-// Scrolling only STARTS the transition; it then plays on a fixed timer, so it looks the
-// same whether the visitor scrolls fast or slow. (progress goes 0 → 1 through the pinned stage.)
-const ENTER_AT = 0.06;   // scroll progress that starts the transition
-const EXIT_AT = 0.02;    // scroll back above this to reverse it (gap avoids flickering)
+// ── Scroll trigger ───────────────
+const ENTER_AT = 0.08;
+const EXIT_AT = 0.01;  // safety net only: back at the very top always resets
+// Exiting needs the same scroll distance as entering (ENTER_AT of the pinned range),
+// measured from wherever the visitor is, so up and down feel identical.
 
 // Timeline, in milliseconds after the trigger
-const REVEAL_MS = 550;   // hero video cuts to the slideshow (text fade takes 0.6s, see CSS)
-const CONTROLS_MS = 600; // slideshow buttons start fading in (1.4s fade, see CSS)
-const START_MS = 2000;   // buttons fully in place (CONTROLS_MS + fade length); slideshow starts
-const EXIT_MS = 300;     // on reverse: buttons fade out first, then the hero returns
+const REVEAL_MS = 550;
+const CONTROLS_MS = 600;
+const START_MS = 2200;
+const EXIT_MS = 600;    // on reverse: buttons fade out (0.6s, see CSS), then the cut
 
 // Set to true once the hero video finishes, so nothing restarts it by accident
 let videoEnded = false;
@@ -255,11 +255,23 @@ if (showcase && track) {
         }, EXIT_MS);
     }
 
+    let lastY = window.scrollY;
+    let upDist = 0;   // how far the visitor has scrolled up in a row
+
     function onScroll() {
         const progress = scrollProgress();
 
-        if (!inShow && progress >= ENTER_AT) enterShow();
-        else if (inShow && progress < EXIT_AT) exitShow();
+        const y = window.scrollY;
+        const dy = y - lastY;
+        lastY = y;
+        upDist = dy < 0 ? upDist - dy : 0;   // reset whenever they scroll down
+
+        // Enter only while scrolling down, so it can't instantly re-trigger on the way back up
+        if (!inShow && progress >= ENTER_AT && dy >= 0) {
+            enterShow();
+        } else if (inShow && (progress < EXIT_AT || (upDist > ENTER_AT * scrollRange() && progress < 1))) {
+            exitShow();
+        }
 
         // Stop the slideshow once the stage has scrolled mostly out of view
         updateInView();

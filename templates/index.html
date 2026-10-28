@@ -14,7 +14,6 @@
 </head>
 
 <body>
-    <!-- Only icon left: the small dropdown arrow -->
     <svg class="nav-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
         <symbol id="i-caret" viewBox="0 0 10 10">
             <path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
@@ -38,86 +37,72 @@
 
             <ul class="nav-menu" id="navMenu">
 
-                <!-- Crew: a constellation. Every letter is its own star and twinkles on its own beat -->
                 <li>
-                    <a class="nav-link" href="/crew" style="--star:#9ec5ff">
-                        <span class="nav-text fx-crew" data-twinkle>Crew</span>
+                    <a class="nav-link" href="/crew">
+                        <span class="nav-text" data-text="Crew">Crew</span>
                     </a>
                 </li>
 
-                <!-- Technology: a quasar. Blazing white-blue core with a pulsing glow -->
                 <li class="nav-item has-dropdown">
                     <button class="nav-link nav-dropdown-toggle" type="button" aria-expanded="false"
-                        aria-haspopup="true" aria-controls="techMenu" style="--star:#7ee0ff">
-                        <span class="nav-text fx-quasar">Technology</span>
+                        aria-haspopup="true" aria-controls="techMenu">
+                        <span class="nav-text" data-text="Technology">Technology</span>
                         <svg class="nav-caret" aria-hidden="true">
                             <use href="#i-caret" />
                         </svg>
                     </button>
                     <ul class="nav-dropdown" id="techMenu">
                         <li>
-                            <!-- Structure: an asteroid. Rocky and cratered -->
-                            <a class="nav-sublink" href="/technology/structure" style="--star:#d8c3a5">
-                                <span><strong class="nav-text fx-asteroid">Structure</strong><small>The rocket and the
-                                        settlement</small></span>
+                            <a class="nav-sublink" href="/technology/structure">
+                                <span class="nav-text" data-text="Structure">Structure</span>
                             </a>
                         </li>
                         <li>
-                            <!-- Software: a binary star. Two glows circling each other -->
-                            <a class="nav-sublink" href="/technology/software" style="--star:#7ee0ff">
-                                <span><strong class="nav-text fx-binary">Software</strong><small>The code that flies the
-                                        mission</small></span>
+                            <a class="nav-sublink" href="/technology/software">
+                                <span class="nav-text" data-text="Software">Software</span>
                             </a>
                         </li>
                         <li>
-                            <!-- Capsule: a comet. Bright head, fading tail -->
-                            <a class="nav-sublink" href="/technology/capsule" style="--star:#ff8a66">
-                                <span><strong class="nav-text fx-comet">Capsule</strong><small>How the crew gets to
-                                        Mars</small></span>
+                            <a class="nav-sublink" href="/technology/capsule">
+                                <span class="nav-text" data-text="Capsule">Capsule</span>
                             </a>
                         </li>
                     </ul>
                 </li>
 
-                <!-- Flight Log: an orbit. A tiny body circles the words -->
                 <li>
-                    <a class="nav-link" href="/flight-log" style="--star:#ffd27a">
-                        <span class="nav-text fx-orbit">Flight Log</span>
+                    <a class="nav-link" href="/flight-log">
+                        <span class="nav-text" data-text="Flight Log">Flight Log</span>
                     </a>
                 </li>
 
-                <!-- Trivia: a supernova. Smolders, then flashes -->
                 <li>
-                    <a class="nav-link" href="/trivia" style="--star:#ff8fb8">
-                        <span class="nav-text fx-supernova">Trivia</span>
+                    <a class="nav-link" href="/trivia">
+                        <span class="nav-text" data-text="Trivia">Trivia</span>
                     </a>
                 </li>
 
-                <!-- Learn More: a spiral galaxy. Drifting purple, pink and blue with pinpoint stars -->
                 <li>
-                    <a class="nav-link" href="/learn-more" style="--star:#b9a4ff">
-                        <span class="nav-text fx-galaxy">Learn More</span>
+                    <a class="nav-link" href="/learn-more">
+                        <span class="nav-text" data-text="Learn More">Learn More</span>
                     </a>
                 </li>
 
-                <!-- Help: the North Star. Steady guiding light with a twinkle -->
                 <li>
-                    <a class="nav-link" href="/help" style="--star:#fff1a8">
-                        <span class="nav-text fx-northstar">Help</span>
+                    <a class="nav-link" href="/help">
+                        <span class="nav-text" data-text="Help">Help</span>
                     </a>
                 </li>
 
-                <!-- Reference: the Moon. Light slowly sweeps across it like a changing phase -->
                 <li>
-                    <a class="nav-link" href="/reference" style="--star:#cfd8ea">
-                        <span class="nav-text fx-moon">Reference</span>
+                    <a class="nav-link" href="/reference">
+                        <span class="nav-text" data-text="Reference">Reference</span>
                     </a>
                 </li>
 
-                <!-- Solar System: a ringed planet. Banded gas giant with a ring through it -->
                 <li>
-                    <a class="nav-link" href="/solar-system" style="--star:#ffa866">
-                        <span class="nav-text fx-planet">Solar System</span>
+                    <a class="nav-link" href="/solar-system">
+                        <span class="nav-text" data-text="Solar System">Solar System</span>
                     </a>
                 </li>
 

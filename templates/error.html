@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ code }} | Project Vulkan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Outfit:wght@300;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            background: #060d24;
+            color: #f4eed8;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .code {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-weight: 600;
+            font-size: clamp(5rem, 20vw, 12rem);
+            line-height: 1;
+            background: linear-gradient(to top, #5c0a03, #c1280e, #ff5a3c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            padding: 0 0.1em 0.1em 0;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            margin-bottom: 0.6rem;
+        }
+
+        p {
+            font-weight: 300;
+            color: rgba(244, 238, 216, 0.65);
+            max-width: 460px;
+            line-height: 1.7;
+            margin-bottom: 1.8rem;
+        }
+
+        a {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #f4eed8;
+            text-decoration: none;
+            border: 1px solid rgba(244, 238, 216, 0.4);
+            border-radius: 999px;
+            padding: 0.6rem 1.4rem;
+            background: rgba(244, 238, 216, 0.12);
+            transition: background 0.2s;
+        }
+
+        a:hover {
+            background: rgba(244, 238, 216, 0.25);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="code">{{ code }}</div>
+    <h1>{{ title }}</h1>
+    <p>{{ message }}</p>
+    <a href="/">Return to base</a>
+</body>
+
+</html>

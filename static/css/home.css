@@ -420,19 +420,17 @@ main {
     width: 28px;
 }
 
-
 /* Slideshow buttons start hidden; the scroll trigger fades them in (see home.js) */
 .slide-arrow,
 .slide-dots {
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease, background 0.2s;
+    transition: opacity 1.8s ease, background 0.2s;
 }
 
 .stage.controls-in .slide-arrow,
 .stage.controls-in .slide-dots {
     opacity: 1;
     pointer-events: auto;
-    transition: opacity 1.4s ease, background 0.2s;
-    /* slow fade-in; keep START_MS in home.js in sync */
+    transition: opacity 1.6s ease, background 0.2s;
 }

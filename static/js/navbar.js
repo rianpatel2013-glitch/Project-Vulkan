@@ -10,23 +10,7 @@
     const dropdownItems = navbar.querySelectorAll('.has-dropdown');
 
     // Desktop layout with a real hover pointer (mouse/trackpad). Keep in sync with the CSS breakpoint.
-    const hoverDesktop = window.matchMedia('(min-width: 1061px) and (hover: hover)');
-
-    // ── Crew: split the word into letters so each one twinkles like its own star ──
-    navbar.querySelectorAll('[data-twinkle]').forEach((el) => {
-        const word = el.textContent.trim();
-        // Screen readers read the word, not separate letters (the link needs a name since the letters are hidden)
-        (el.closest('a, button') || el).setAttribute('aria-label', word);
-        el.textContent = '';
-        [...word].forEach((char, i) => {
-            const letter = document.createElement('span');
-            letter.className = 'nav-letter';
-            letter.setAttribute('aria-hidden', 'true');
-            letter.style.setProperty('--i', i);
-            letter.textContent = char;
-            el.appendChild(letter);
-        });
-    });
+    const hoverDesktop = window.matchMedia('(min-width: 1221px) and (hover: hover)');
 
     // ── Highlight the current page ─────────────────────────────
     const normalize = (path) => path.replace(/\/+$/, '') || '/';
@@ -120,7 +104,7 @@
 
     // Resizing to the desktop layout resets the mobile state
     window.addEventListener('resize', () => {
-        if (window.innerWidth > 1060) setMenu(false);
+        if (window.innerWidth > 1220) setMenu(false);
     });
 
     // ── More solid once the page is scrolled ───────────────────

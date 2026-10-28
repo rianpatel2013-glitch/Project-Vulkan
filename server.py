@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from jinja2 import TemplateNotFound
 import os
 
 app = Flask(__name__)
@@ -25,6 +26,25 @@ def add_page(path, template):
 
 for path, template in PAGES.items():
     add_page(path, template)
+
+@app.errorhandler(404)
+@app.errorhandler(TemplateNotFound)   # route exists, but its page isn't built yet
+def not_found(e):
+    return render_template(
+        'error.html',
+        code=404,
+        title='Mission Not Found',
+        message="This page doesn't exist yet, or hasn't launched. Head back to base."
+    ), 404
+
+@app.errorhandler(500)
+def server_error(e):
+    return render_template(
+        'error.html',
+        code=500,
+        title='Mission Failure',
+        message='Something went wrong on our end. Please try again shortly.'
+    ), 500
 
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 8000))
