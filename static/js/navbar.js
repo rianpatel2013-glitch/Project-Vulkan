@@ -6,6 +6,15 @@
     if (!navbar) return;
 
     const glass = document.getElementById('navGlass');
+
+    // ── Publish the bar's real height as --nav-h ───────────────
+    // Pages use it to start content (like the home hero video) just below the fixed bar.
+    const publishNavHeight = () => {
+        document.documentElement.style.setProperty('--nav-h', navbar.offsetHeight + 'px');
+    };
+    publishNavHeight();
+    window.addEventListener('resize', publishNavHeight);
+    if ('ResizeObserver' in window) new ResizeObserver(publishNavHeight).observe(glass);
     const toggle = document.getElementById('navToggle');
     const dropdownItems = navbar.querySelectorAll('.has-dropdown');
 

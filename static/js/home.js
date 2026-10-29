@@ -27,24 +27,25 @@ const EXIT_MS = 600;    // on reverse: buttons fade out (0.6s, see CSS), then th
 let videoEnded = false;
 
 // ── Scroll cue visibility ──────────────────────────────────────
-// Returning visitors already know to scroll, so show it right away for them.
-// First-timers only see it after the intro video finishes.
-// It also hides itself as soon as the visitor starts scrolling.
+// The cue appears once the intro video finishes its first play-through.
+// From then on it stays visible: it never hides on scroll, and it is shown right away
+// on reloads within the same browser session. It is remembered in sessionStorage, so
+// closing the tab/browser and reopening starts fresh (the cue waits for the video again).
 const SEEN_KEY = 'vulkanIntroSeen';
 let cueReady = false;
 
 function hasSeenIntro() {
-    try { return localStorage.getItem(SEEN_KEY) === '1'; }
+    try { return sessionStorage.getItem(SEEN_KEY) === '1'; }
     catch (e) { return false; }
 }
 
 function markIntroSeen() {
-    try { localStorage.setItem(SEEN_KEY, '1'); }
+    try { sessionStorage.setItem(SEEN_KEY, '1'); }
     catch (e) { /* storage blocked, ignore */ }
 }
 
 function refreshScrollCue() {
-    if (scrollCue) scrollCue.classList.toggle('visible', cueReady && window.scrollY < 20);
+    if (scrollCue) scrollCue.classList.toggle('visible', cueReady);
 }
 
 function showScrollCue() {
@@ -58,12 +59,57 @@ if (hasSeenIntro()) showScrollCue();
 if (heroVideo) {
     // Video always starts muted (required for autoplay)
     heroVideo.muted = true;
+    heroVideo.defaultMuted = true;
+    heroVideo.setAttribute('muted', '');
+    heroVideo.setAttribute('playsinline', '');
 
+    // ── Autoplay: try as early as possible, retry if the browser says no ──
+    const canAutoplay = () =>
+        !videoEnded && !(showcase && showcase.classList.contains('revealed'));
+
+    const tryPlay = () => {
+        if (!canAutoplay() || !heroVideo.paused) return;
+        const p = heroVideo.play();
+        if (p && p.catch) p.catch(() => { /* retried below */ });
+    };
+
+    tryPlay();
+    heroVideo.addEventListener('loadeddata', tryPlay);
+    heroVideo.addEventListener('canplay', tryPlay);
+    window.addEventListener('load', tryPlay);
+    window.addEventListener('pageshow', tryPlay);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) tryPlay(); });
+
+    // Last resort (e.g. Low Power Mode): the first touch/click/key/scroll starts it
+    ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach((evt) => {
+        const kick = () => {
+            tryPlay();
+            if (!heroVideo.paused) {
+                ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll']
+                    .forEach((e) => window.removeEventListener(e, kick));
+            }
+        };
+        window.addEventListener(evt, kick, { passive: true });
+    });
+
+    // The video loops (see the `loop` attribute), so 'ended' never fires.
+    // Instead, notice the moment playback wraps back to the start: that is the first
+    // full play-through, and the moment the "Scroll down" cue appears (for good).
+    let lastTime = 0;
+    heroVideo.addEventListener('timeupdate', () => {
+        if (!cueReady && heroVideo.currentTime < lastTime - 0.5) {
+            showScrollCue();
+            markIntroSeen();
+        }
+        lastTime = heroVideo.currentTime;
+    });
+
+    // Safety net in case a browser ignores `loop` and fires 'ended' anyway
     heroVideo.addEventListener('ended', () => {
-        videoEnded = true;
-        heroVideo.pause(); // stays on the last frame
         showScrollCue();
         markIntroSeen();
+        heroVideo.currentTime = 0;
+        heroVideo.play().catch(() => { });
     });
 
     // If the video can't load, don't leave the visitor without the cue

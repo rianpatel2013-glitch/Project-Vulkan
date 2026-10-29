@@ -51,12 +51,17 @@ main {
     position: relative;
     height: 180svh;
     /* scrolling only TRIGGERS the transition; this is just how long the stage stays pinned */
+
+    /* The navbar is fixed on top of the page, so start the stage just below it.
+       --nav-h is measured from the real navbar in navbar.js (66px is the fallback). */
+    padding-top: var(--nav-h, 66px);
 }
 
 .stage {
     position: sticky;
-    top: 0;
-    height: 100svh;
+    top: var(--nav-h, 66px);
+    /* pins directly under the navbar, not behind it */
+    height: calc(100svh - var(--nav-h, 66px));
     overflow: hidden;
 }
 
@@ -132,7 +137,7 @@ main {
     text-shadow: 0 2px 24px rgba(6, 13, 36, 0.6);
 }
 
-/* "Vulkan": Mars-red lava gradient with a flickering fire glow */
+/* "Vulkan": Mars-red lava gradient with a steady glow */
 .hero-title em {
     font-style: italic;
     display: inline-block;
@@ -154,9 +159,11 @@ main {
     -webkit-text-fill-color: transparent;
     text-shadow: none;
 
-    animation:
-        fireFlow 2.4s ease-in-out infinite alternate,
-        fireFlicker 1.3s linear infinite;
+    /* Steady (non-pulsing) red glow */
+    filter: drop-shadow(0 0 8px rgba(230, 30, 20, 0.6));
+
+    /* The gradient slowly slides up and down through the letters */
+    animation: fireFlow 2.4s ease-in-out infinite alternate;
 }
 
 /* Flames licking up through the letters */
@@ -170,35 +177,9 @@ main {
     }
 }
 
-/* Uneven, flickering glow around the letters */
-@keyframes fireFlicker {
-
-    0%,
-    100% {
-        filter: drop-shadow(0 0 6px rgba(230, 30, 20, 0.70)) drop-shadow(0 -4px 16px rgba(240, 70, 30, 0.45));
-    }
-
-    18% {
-        filter: drop-shadow(0 0 10px rgba(225, 25, 15, 0.85)) drop-shadow(0 -6px 22px rgba(245, 80, 30, 0.65));
-    }
-
-    37% {
-        filter: drop-shadow(0 0 5px rgba(235, 35, 20, 0.60)) drop-shadow(0 -3px 12px rgba(238, 65, 28, 0.40));
-    }
-
-    52% {
-        filter: drop-shadow(0 0 12px rgba(220, 20, 10, 0.90)) drop-shadow(0 -7px 26px rgba(250, 90, 35, 0.70));
-    }
-
-    73% {
-        filter: drop-shadow(0 0 7px rgba(230, 30, 20, 0.70)) drop-shadow(0 -4px 15px rgba(240, 70, 30, 0.50));
-    }
-}
-
 @media (prefers-reduced-motion: reduce) {
     .hero-title em {
         animation: none;
-        filter: drop-shadow(0 0 8px rgba(230, 30, 20, 0.6));
     }
 }
 

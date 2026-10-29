@@ -1,13 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
 
-/* ══════════════════════════════════════
-   NAVBAR — full-width glass bar over a dark, subtle gradient.
-   Every title is bold light lettering with yellow sparkles twinkling inside the letters.
-   Shared by every page.
-   The bar is fixed at the very top, so give page content padding-top: 76px
-   (the home hero sits behind it on purpose).
-══════════════════════════════════════ */
-
 :root {
     --nav-spark: #ffd23f;
     /* the yellow of the sparkles, underline and "you are here" dot */
@@ -131,8 +123,8 @@
     background: none;
     color: var(--nav-text);
     font-family: inherit;
-    font-size: clamp(1.06rem, 0.5vw + 0.75rem, 1.3rem);
-    /* about 18px at 1280px wide */
+    font-size: clamp(1.12rem, 0.5vw + 0.81rem, 1.38rem);
+    /* about 19px at 1280px wide */
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
@@ -197,7 +189,7 @@
 .nav-text {
     position: relative;
     display: inline-block;
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: 0.035em;
     line-height: 1.25;
     color: var(--nav-text);
@@ -376,7 +368,7 @@
     padding: 0.75rem 1.1rem;
     border-radius: 12px;
     color: var(--nav-text);
-    font-size: 1.18rem;
+    font-size: 1.24rem;
     text-decoration: none;
     transition: background 0.2s ease;
 }
@@ -465,7 +457,7 @@
         width: 100%;
         padding: 0.85rem 0.9rem;
         border-radius: 14px;
-        font-size: 1.25rem;
+        font-size: 1.3rem;
     }
 
     .nav-link:hover,
@@ -531,7 +523,7 @@
 
     .nav-sublink {
         padding: 0.8rem 0.9rem;
-        font-size: 1.15rem;
+        font-size: 1.2rem;
     }
 }
 
