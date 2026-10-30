@@ -9,6 +9,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Outfit:wght@300;600&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}" data-endpoint="{{ url_for('api_chat') }}"
+        defer></script>
     <style>
         * {
             box-sizing: border-box;

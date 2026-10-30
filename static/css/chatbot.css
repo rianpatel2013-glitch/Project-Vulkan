@@ -1,0 +1,647 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500;1,600&family=Outfit:wght@300;400;500;600&display=swap');
+
+/* ══════════════════════════════════════
+   MISSION CONTROL CHAT: Project Vulkan
+   Palette is shared with the navbar / home page:
+   deep navy, cream, spark yellow, Mars red.
+══════════════════════════════════════ */
+
+.vk-chat {
+    --vk-navy: #060d24;
+    --vk-navy-2: #0c163a;
+    --vk-cream: #f4eed8;
+    --vk-muted: rgba(244, 238, 216, 0.62);
+    --vk-spark: #ffd23f;
+    --vk-red: #ff4533;
+    --vk-line: rgba(255, 255, 255, 0.1);
+
+    position: fixed;
+    right: max(clamp(1rem, 2.5vw, 1.75rem), env(safe-area-inset-right));
+    bottom: max(clamp(1rem, 2.5vw, 1.75rem), env(safe-area-inset-bottom));
+    z-index: 1100;
+    font-family: 'Outfit', sans-serif;
+    color: var(--vk-cream);
+    line-height: 1.5;
+}
+
+.vk-chat *,
+.vk-chat *::before,
+.vk-chat *::after {
+    box-sizing: border-box;
+}
+
+.vk-chat button,
+.vk-chat textarea {
+    font: inherit;
+    color: inherit;
+}
+
+.vk-chat :focus-visible {
+    outline: 2px solid var(--vk-spark);
+    outline-offset: 3px;
+}
+
+/* ─── The planet: mars.png, with a painted Mars if the image can't load ─── */
+.vk-planet {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.vk-planet img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vk-planet.is-fallback {
+    background:
+        radial-gradient(circle at 63% 66%, rgba(90, 14, 4, 0.55) 0 7%, transparent 8%),
+        radial-gradient(circle at 36% 72%, rgba(90, 14, 4, 0.4) 0 5%, transparent 6%),
+        radial-gradient(circle at 70% 30%, rgba(90, 14, 4, 0.35) 0 4%, transparent 5%),
+        radial-gradient(circle at 32% 28%, #ff8a5c 0%, #e2431f 36%, #8a1a08 72%, #3d0802 100%);
+}
+
+/* ═════════ Launcher ═════════ */
+.vk-launcher {
+    position: relative;
+    display: block;
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 10, 0.55)) drop-shadow(0 0 12px rgba(255, 69, 51, 0.4));
+    transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.3), filter 0.25s ease;
+}
+
+.vk-launcher:hover {
+    transform: scale(1.07);
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 10, 0.6)) drop-shadow(0 0 20px rgba(255, 69, 51, 0.6));
+}
+
+.vk-launcher:active {
+    transform: scale(0.96);
+}
+
+.vk-launcher .vk-planet {
+    width: 100%;
+    height: 100%;
+}
+
+/* Small chat badge so the planet reads as "a chat button" */
+.vk-badge {
+    position: absolute;
+    left: -5px;
+    bottom: -3px;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 1.5px solid var(--vk-spark);
+    border-radius: 50%;
+    background: var(--vk-navy-2);
+    box-shadow: 0 3px 8px rgba(0, 0, 10, 0.5);
+}
+
+.vk-badge svg {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: var(--vk-cream);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: opacity 0.2s ease, transform 0.3s ease;
+}
+
+.vk-badge .vk-i-chat path:last-child {
+    fill: var(--vk-spark);
+    stroke: none;
+}
+
+.vk-badge .vk-i-close {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
+}
+
+.vk-chat.is-open .vk-badge .vk-i-chat {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.6);
+}
+
+.vk-chat.is-open .vk-badge .vk-i-close {
+    opacity: 1;
+    transform: none;
+}
+
+/* ─── Small invitation bubble beside the launcher ─── */
+.vk-nudge {
+    position: absolute;
+    right: 82px;
+    bottom: 10px;
+    width: max-content;
+    max-width: min(230px, calc(100vw - 7rem));
+    padding: 0.6rem 0.9rem;
+    border: 1px solid rgba(255, 210, 63, 0.35);
+    border-radius: 14px 14px 4px 14px;
+    background: linear-gradient(180deg, rgba(12, 22, 58, 0.95), rgba(5, 9, 26, 0.95));
+    box-shadow: 0 10px 26px rgba(0, 0, 10, 0.45);
+    font-size: 0.86rem;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateX(10px);
+    visibility: hidden;
+    transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s 0.35s;
+}
+
+.vk-nudge.show {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.vk-nudge b {
+    font-weight: 600;
+    color: var(--vk-spark);
+}
+
+/* ═════════ Panel ═════════ */
+.vk-panel {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 16px);
+    display: flex;
+    flex-direction: column;
+    width: min(392px, calc(100vw - 2rem));
+    max-height: min(600px, calc(100svh - var(--nav-h, 66px) - 8.5rem));
+    overflow: hidden;
+    border: 1px solid var(--vk-line);
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(12, 22, 58, 0.97), rgba(5, 9, 26, 0.98));
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    backdrop-filter: blur(20px) saturate(150%);
+    box-shadow: 0 24px 60px rgba(0, 0, 10, 0.6), 0 0 0 1px rgba(255, 210, 63, 0.05);
+
+    transform-origin: bottom right;
+    opacity: 0;
+    transform: translateY(14px) scale(0.93);
+    visibility: hidden;
+    transition: opacity 0.22s ease, transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1), visibility 0s 0.3s;
+}
+
+.vk-chat.is-open .vk-panel {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+/* ─── Header ─── */
+.vk-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 0.9rem 0.8rem 1.1rem;
+    border-bottom: 1px solid var(--vk-line);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent);
+}
+
+.vk-avatar {
+    flex: none;
+    width: 38px;
+    height: 38px;
+    filter: drop-shadow(0 0 8px rgba(255, 69, 51, 0.4));
+}
+
+.vk-title {
+    flex: 1;
+    min-width: 0;
+}
+
+.vk-title h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 1.45rem;
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    color: var(--vk-cream);
+}
+
+.vk-icon-btn {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.vk-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--vk-line);
+}
+
+.vk-icon-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: var(--vk-cream);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ─── Message area (starfield sits behind the scrolling log) ─── */
+.vk-body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.vk-body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.6;
+    background-image:
+        radial-gradient(1px 1px at 22px 34px, #fff, transparent),
+        radial-gradient(1px 1px at 96px 128px, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1.6px 1.6px at 170px 64px, var(--vk-spark), transparent),
+        radial-gradient(1px 1px at 248px 176px, #fff, transparent),
+        radial-gradient(1px 1px at 318px 96px, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(1.4px 1.4px at 58px 196px, rgba(255, 140, 110, 0.9), transparent);
+    background-size: 340px 220px;
+}
+
+.vk-log {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1rem 1rem 0.5rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* ─── Bubbles ─── */
+.vk-msg {
+    max-width: 90%;
+    padding: 0.6rem 0.85rem;
+    font-size: 0.92rem;
+    overflow-wrap: anywhere;
+    animation: vk-pop 0.25s ease both;
+}
+
+@keyframes vk-pop {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+}
+
+.vk-msg.bot {
+    align-self: flex-start;
+    border: 1px solid var(--vk-line);
+    border-left: 2px solid var(--vk-red);
+    border-radius: 6px 16px 16px 16px;
+    background: rgba(10, 18, 48, 0.82);
+}
+
+.vk-msg.user {
+    align-self: flex-end;
+    border-radius: 16px 16px 4px 16px;
+    background: linear-gradient(135deg, #ffd23f, #ffb41f);
+    color: #1b1303;
+    font-weight: 500;
+    white-space: pre-wrap;
+}
+
+/* Markdown coming back from the server */
+.vk-msg.bot> :first-child {
+    margin-top: 0;
+}
+
+.vk-msg.bot> :last-child {
+    margin-bottom: 0;
+}
+
+.vk-msg.bot p {
+    margin: 0.5em 0;
+}
+
+.vk-msg.bot h1,
+.vk-msg.bot h2,
+.vk-msg.bot h3,
+.vk-msg.bot h4 {
+    margin: 0.8em 0 0.3em;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--vk-spark);
+}
+
+.vk-msg.bot h1 {
+    font-size: 1.35rem;
+}
+
+.vk-msg.bot h2 {
+    font-size: 1.2rem;
+}
+
+.vk-msg.bot h3,
+.vk-msg.bot h4 {
+    font-size: 1.08rem;
+}
+
+.vk-msg.bot ul,
+.vk-msg.bot ol {
+    margin: 0.5em 0;
+    padding-left: 1.25em;
+}
+
+.vk-msg.bot li {
+    margin: 0.2em 0;
+}
+
+.vk-msg.bot li::marker {
+    color: var(--vk-spark);
+}
+
+.vk-msg.bot strong {
+    font-weight: 600;
+    color: #fff;
+}
+
+.vk-msg.bot a {
+    color: var(--vk-spark);
+    text-underline-offset: 2px;
+}
+
+.vk-msg.bot code {
+    padding: 0.1em 0.35em;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 0.85em;
+}
+
+.vk-msg.bot pre {
+    margin: 0.5em 0;
+    padding: 0.6rem 0.75rem;
+    overflow-x: auto;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.vk-msg.bot pre code {
+    padding: 0;
+    background: none;
+}
+
+.vk-msg.bot table {
+    display: block;
+    max-width: 100%;
+    margin: 0.5em 0;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.vk-msg.bot th,
+.vk-msg.bot td {
+    padding: 0.3rem 0.55rem;
+    border: 1px solid var(--vk-line);
+    text-align: left;
+}
+
+.vk-msg.bot blockquote {
+    margin: 0.5em 0;
+    padding-left: 0.75rem;
+    border-left: 2px solid var(--vk-line);
+    color: var(--vk-muted);
+}
+
+/* Sources: collapsed so they don't crowd a small window */
+.vk-sources {
+    margin-top: 0.65rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--vk-line);
+    font-size: 0.8rem;
+}
+
+.vk-sources summary {
+    cursor: pointer;
+    color: var(--vk-muted);
+}
+
+.vk-sources summary:hover {
+    color: var(--vk-cream);
+}
+
+.vk-sources ul {
+    margin: 0.4rem 0 0;
+    padding-left: 1.1rem;
+}
+
+.vk-sources li {
+    margin: 0.15rem 0;
+}
+
+/* ─── Thinking indicator ─── */
+.vk-typing {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--vk-muted);
+    font-size: 0.84rem;
+}
+
+.vk-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.vk-dots i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--vk-spark);
+    animation: vk-dot 1.2s ease-in-out infinite;
+}
+
+.vk-dots i:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.vk-dots i:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes vk-dot {
+
+    0%,
+    70%,
+    100% {
+        opacity: 0.25;
+        transform: translateY(0);
+    }
+
+    35% {
+        opacity: 1;
+        transform: translateY(-4px);
+    }
+}
+
+/* ─── Suggested questions ─── */
+.vk-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.15rem;
+}
+
+.vk-chip {
+    padding: 0.42rem 0.8rem;
+    border: 1px solid rgba(255, 210, 63, 0.4);
+    border-radius: 999px;
+    background: rgba(255, 210, 63, 0.07);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.vk-chip:hover {
+    background: rgba(255, 210, 63, 0.18);
+    border-color: var(--vk-spark);
+    transform: translateY(-1px);
+}
+
+/* ─── Composer ─── */
+.vk-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.7rem 0.8rem 0.35rem;
+}
+
+.vk-input {
+    flex: 1;
+    min-width: 0;
+    max-height: 112px;
+    padding: 0.62rem 0.95rem;
+    resize: none;
+    border: 1px solid var(--vk-line);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 0.92rem;
+    line-height: 1.4;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.vk-input::placeholder {
+    color: rgba(244, 238, 216, 0.4);
+}
+
+.vk-input:focus {
+    outline: none;
+    border-color: var(--vk-spark);
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.vk-send {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffd23f, #ffb41f);
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
+}
+
+.vk-send svg {
+    width: 20px;
+    height: 20px;
+    fill: #1b1303;
+    transform: translateX(1px);
+}
+
+.vk-send:hover:not(:disabled) {
+    transform: scale(1.08) rotate(-8deg);
+}
+
+.vk-send:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+}
+
+.vk-foot {
+    padding: 0 1rem 0.65rem;
+    font-size: 0.7rem;
+    text-align: center;
+    color: rgba(244, 238, 216, 0.4);
+}
+
+/* ═════════ Phones: panel becomes a full sheet under the navbar ═════════ */
+@media (max-width: 520px) {
+    .vk-launcher {
+        width: 58px;
+        height: 58px;
+    }
+
+    .vk-panel {
+        position: fixed;
+        left: 0.5rem;
+        right: 0.5rem;
+        bottom: max(0.5rem, env(safe-area-inset-bottom));
+        width: auto;
+        height: calc(100svh - var(--nav-h, 66px) - 1rem);
+        max-height: none;
+        border-radius: 20px;
+    }
+
+    .vk-chat.is-open .vk-launcher {
+        visibility: hidden;
+    }
+
+    .vk-input {
+        font-size: 16px;
+        /* stops iOS from zooming in on focus */
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .vk-chat *,
+    .vk-chat *::before,
+    .vk-chat *::after {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0s !important;
+    }
+}

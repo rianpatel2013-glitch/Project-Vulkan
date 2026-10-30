@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from backend.chatbot import chat_post
 from jinja2 import TemplateNotFound
 import os
 
@@ -7,6 +8,11 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return render_template('index.html')
+
+# Mission Control AI chatbot (the widget in static/js/chatbot.js talks to this)
+@app.route('/api/chat', methods=['POST'])
+def api_chat():
+    return chat_post()
 
 PAGES = {
     '/crew': 'crew.html',
