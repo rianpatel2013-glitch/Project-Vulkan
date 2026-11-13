@@ -7,31 +7,6 @@
     /* the lettering itself */
     --nav-red: #ff4533;
     /* the hover / open underline */
-
-    /* Starfield, same look as the Mission Control chat window.
-       Two tiles: a short one for the bar, a taller one for the mobile menu. */
-    --nav-stars-bar:
-        radial-gradient(1px 1px at 18px 14px, #fff, transparent),
-        radial-gradient(1px 1px at 64px 46px, rgba(255, 255, 255, 0.8), transparent),
-        radial-gradient(1.6px 1.6px at 112px 22px, #ffd23f, transparent),
-        radial-gradient(1px 1px at 156px 52px, #fff, transparent),
-        radial-gradient(1px 1px at 205px 12px, rgba(255, 255, 255, 0.7), transparent),
-        radial-gradient(1.4px 1.4px at 247px 40px, rgba(255, 140, 110, 0.9), transparent),
-        radial-gradient(1px 1px at 290px 26px, #fff, transparent);
-    --nav-stars-tall:
-        radial-gradient(1px 1px at 22px 34px, #fff, transparent),
-        radial-gradient(1px 1px at 96px 128px, rgba(255, 255, 255, 0.8), transparent),
-        radial-gradient(1.6px 1.6px at 170px 64px, #ffd23f, transparent),
-        radial-gradient(1px 1px at 248px 176px, #fff, transparent),
-        radial-gradient(1px 1px at 318px 96px, rgba(255, 255, 255, 0.7), transparent),
-        radial-gradient(1.4px 1.4px at 58px 196px, rgba(255, 140, 110, 0.9), transparent);
-}
-
-.nav-sprite {
-    position: absolute;
-    width: 0;
-    height: 0;
-    overflow: hidden;
 }
 
 .navbar {
@@ -72,16 +47,19 @@
     background: linear-gradient(180deg, rgba(12, 22, 58, 0.82), rgba(5, 9, 26, 0.72));
 }
 
-/* Stars sit behind everything in the bar (the brand, toggle and menu are z-index 1) */
+/* The bar shows a thin slice of space-background.jpg, kept behind everything in it
+   (the brand, toggle and menu are z-index 1). To show a different part of the sky, change
+   the background-position; to zoom, change the 1600px. */
 .nav-glass::before {
     content: '';
     position: absolute;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.6;
-    background-image: var(--nav-stars-bar);
-    background-size: 320px 64px;
+    opacity: 0.8;
+    background:
+        linear-gradient(rgba(6, 13, 36, 0.4), rgba(6, 13, 36, 0.4)),
+        url('../images/space-background.jpg') 35% 25% / max(100vw, 1600px) auto no-repeat;
 }
 
 .nav-brand,
@@ -161,8 +139,8 @@
 }
 
 .nav-caret {
-    width: 11px;
-    height: 11px;
+    width: 16px;
+    height: 16px;
     flex: none;
     color: var(--nav-text);
     opacity: 0.8;
@@ -347,6 +325,10 @@
     --delay: -1.5s;
 }
 
+.nav-menu>li:nth-child(9) .nav-text {
+    --delay: -2.1s;
+}
+
 .nav-dropdown li:nth-child(2) .nav-text {
     --delay: -1s;
 }
@@ -476,17 +458,17 @@
         transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
     }
 
-    /* z-index -1 puts the stars above the menu's background but under its links */
+    /* A different crop of the same photo; z-index -1 puts it above the menu's background but under its links */
     .nav-menu::before {
         content: '';
         position: absolute;
         inset: 0;
         z-index: -1;
         pointer-events: none;
-        opacity: 0.55;
         border-radius: inherit;
-        background-image: var(--nav-stars-tall);
-        background-size: 340px 220px;
+        background:
+            linear-gradient(rgba(6, 13, 36, 0.5), rgba(6, 13, 36, 0.5)),
+            url('../images/space-background.jpg') 15% 80% / 1300px auto no-repeat;
     }
 
     .nav-glass.menu-open .nav-menu {

@@ -27,6 +27,20 @@ body {
     overflow: auto;
 }
 
+/* Site background: space-background.jpg, scaled to the screen (so close to its original size) and
+   pinned in place. A fixed pseudo-element is used instead of background-attachment: fixed
+   because iOS ignores that. The navy tint keeps the cream text readable; lower it to show more photo. */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(rgba(6, 13, 36, 0.25), rgba(6, 13, 36, 0.25)),
+        url('../images/space-background.jpg') center / cover no-repeat;
+}
+
 /* Webpage Opening Animation */
 @keyframes fadeIn {
     from {
@@ -72,7 +86,8 @@ main {
     display: flex;
     align-items: flex-end;
     overflow: hidden;
-    background: #060d24;
+    /* the photo shows here until the video has loaded */
+    background: #060d24 url('../images/space-background.jpg') center / cover no-repeat;
 }
 
 .hero-bg {

@@ -21,6 +21,7 @@ PAGES = {
     '/technology/capsule': 'capsule.html',
     '/flight-log': 'flight_log.html',
     '/trivia': 'trivia.html',
+    '/news': 'news.html',
     '/learn-more': 'learn_more.html',
     '/help': 'help.html',
     '/reference': 'reference.html',

@@ -9,11 +9,15 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Outfit:wght@300;600&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
+    <script src="{{ url_for('static', filename='js/navbar.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/chatbot.js') }}" data-endpoint="{{ url_for('api_chat') }}"
         defer></script>
     <style>
-        * {
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -21,18 +25,41 @@
 
         body {
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 2rem;
             background: #060d24;
             color: #f4eed8;
             font-family: 'Outfit', sans-serif;
         }
 
-        .code {
+        /* Everything below is scoped to .error so it can't restyle the navbar's links */
+        .error {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            /* clear the fixed navbar (its height is published by navbar.js) */
+            padding: calc(var(--nav-h, 66px) + 2rem) 2rem 2rem;
+        }
+
+        /* Same photo as the home page, but shown LARGER than the screen (at least 2700px wide, bigger than
+           the 2400px original) instead of squeezed to fit. Only part of the sky is in view, so there are
+           fewer stars and each one is bigger. Raise the 2700px for even fewer; lower it to see more sky.
+           The navy tint keeps it easy on the eyes. */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-image: linear-gradient(rgba(6, 13, 36, 0.4), rgba(6, 13, 36, 0.4)),
+            url('{{ url_for("static", filename="images/space-background.jpg") }}');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: auto, max(100vw, 2700px) auto;
+        }
+
+        .error .code {
             font-family: 'Cormorant Garamond', serif;
             font-style: italic;
             font-weight: 600;
@@ -45,13 +72,13 @@
             padding: 0 0.1em 0.1em 0;
         }
 
-        h1 {
+        .error h1 {
             font-family: 'Cormorant Garamond', serif;
             font-size: clamp(1.8rem, 4vw, 2.8rem);
             margin-bottom: 0.6rem;
         }
 
-        p {
+        .error p {
             font-weight: 300;
             color: rgba(244, 238, 216, 0.65);
             max-width: 460px;
@@ -59,7 +86,7 @@
             margin-bottom: 1.8rem;
         }
 
-        a {
+        .error a {
             font-size: 0.8rem;
             font-weight: 600;
             letter-spacing: 0.08em;
@@ -73,17 +100,21 @@
             transition: background 0.2s;
         }
 
-        a:hover {
+        .error a:hover {
             background: rgba(244, 238, 216, 0.25);
         }
     </style>
 </head>
 
 <body>
-    <div class="code">{{ code }}</div>
-    <h1>{{ title }}</h1>
-    <p>{{ message }}</p>
-    <a href="/">Return to base</a>
+    {% include '_navbar.html' %}
+
+    <main class="error">
+        <div class="code">{{ code }}</div>
+        <h1>{{ title }}</h1>
+        <p>{{ message }}</p>
+        <a href="/">Return to base</a>
+    </main>
 </body>
 
 </html>
