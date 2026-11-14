@@ -5,7 +5,7 @@
     /* the yellow of the sparkles, underline and "you are here" dot */
     --nav-text: #eef2ff;
     /* the lettering itself */
-    --nav-red: #ff4533;
+    --nav-accent: #3fb6ff;
     /* the hover / open underline */
 }
 
@@ -90,7 +90,7 @@
 .nav-brand-text em {
     font-style: normal;
     font-weight: 700;
-    background: linear-gradient(to top, #9c1a0a, #e0361a 55%, #ff7a4a);
+    background: linear-gradient(to top, #0a4a9c, #1e90e0 55%, #7fdcff);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -151,7 +151,7 @@
     transform: rotate(180deg);
 }
 
-/* Hover / focus / open: a crisp red line, exactly as wide as the link's text, grows out from the center */
+/* Hover / focus / open: a crisp blue line, exactly as wide as the link's text, grows out from the center */
 .nav-link::before {
     content: '';
     position: absolute;
@@ -160,8 +160,8 @@
     bottom: 5px;
     height: 2px;
     border-radius: 2px;
-    background: var(--nav-red);
-    box-shadow: 0 0 6px rgba(255, 69, 51, 0.45);
+    background: var(--nav-accent);
+    box-shadow: 0 0 6px rgba(63, 182, 255, 0.45);
     transform: scaleX(0);
     transition: transform 0.28s ease;
 }

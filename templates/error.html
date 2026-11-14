@@ -4,15 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ code }} | Project Vulkan</title>
+    <title>{{ code }} | Project Oceanus</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Outfit:wght@300;600&display=swap"
         rel="stylesheet">
-
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
-
     <script src="{{ url_for('static', filename='js/navbar.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/chatbot.js') }}" data-endpoint="{{ url_for('api_chat') }}"
         defer></script>
@@ -44,10 +42,6 @@
             padding: calc(var(--nav-h, 66px) + 2rem) 2rem 2rem;
         }
 
-        /* Same photo as the home page, but shown LARGER than the screen (at least 2700px wide, bigger than
-           the 2400px original) instead of squeezed to fit. Only part of the sky is in view, so there are
-           fewer stars and each one is bigger. Raise the 2700px for even fewer; lower it to see more sky.
-           The navy tint keeps it easy on the eyes. */
         body::before {
             content: '';
             position: fixed;
@@ -67,7 +61,7 @@
             font-weight: 600;
             font-size: clamp(5rem, 20vw, 12rem);
             line-height: 1;
-            background: linear-gradient(to top, #5c0a03, #c1280e, #ff5a3c);
+            background: linear-gradient(to top, #031f4a, #0e72c8, #5cd0ff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;

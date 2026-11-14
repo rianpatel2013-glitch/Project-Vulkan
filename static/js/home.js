@@ -31,7 +31,7 @@ let videoEnded = false;
 // From then on it stays visible: it never hides on scroll, and it is shown right away
 // on reloads within the same browser session. It is remembered in sessionStorage, so
 // closing the tab/browser and reopening starts fresh (the cue waits for the video again).
-const SEEN_KEY = 'vulkanIntroSeen';
+const SEEN_KEY = 'oceanusIntroSeen';
 let cueReady = false;
 
 function hasSeenIntro() {
