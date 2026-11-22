@@ -1,0 +1,579 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+
+:root {
+    --nav-spark: #ffd23f;
+    /* the yellow of the sparkles, underline and "you are here" dot */
+    --nav-text: #eef2ff;
+    /* the lettering itself */
+    --nav-accent: #3fb6ff;
+    /* the hover / open underline */
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* ─── The glass bar: edge to edge, touching the top, dark subtle gradient ─── */
+.nav-glass {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 0.55rem clamp(1.25rem, 3.5vw, 3rem);
+    background: linear-gradient(180deg, rgba(12, 22, 58, 0.72), rgba(5, 9, 26, 0.55));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    backdrop-filter: blur(20px) saturate(150%);
+    box-shadow: 0 10px 30px rgba(0, 0, 10, 0.28);
+    transition: background 0.3s ease;
+}
+
+/* Browsers without backdrop-filter get a more solid bar so text stays readable */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .nav-glass {
+        background: rgba(6, 12, 32, 0.95);
+    }
+}
+
+/* Slightly more solid once the page has been scrolled */
+.navbar.scrolled .nav-glass {
+    background: linear-gradient(180deg, rgba(12, 22, 58, 0.82), rgba(5, 9, 26, 0.72));
+}
+
+/* The bar shows a thin slice of space-background.jpg, kept behind everything in it
+   (the brand, toggle and menu are z-index 1). To show a different part of the sky, change
+   the background-position; to zoom, change the 1600px. */
+.nav-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.8;
+    background:
+        linear-gradient(rgba(6, 13, 36, 0.4), rgba(6, 13, 36, 0.4)),
+        url('../images/space-background.jpg') 35% 25% / max(100vw, 1600px) auto no-repeat;
+}
+
+.nav-brand,
+.nav-toggle,
+.nav-menu {
+    position: relative;
+    z-index: 1;
+}
+
+/* ─── Brand ─── */
+.nav-brand {
+    flex: none;
+    text-decoration: none;
+    color: #f4eed8;
+    border-radius: 999px;
+}
+
+.nav-brand-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.3rem, 0.5vw + 1.05rem, 1.6rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.nav-brand-text em {
+    font-style: normal;
+    font-weight: 700;
+    background: linear-gradient(to top, #0a4a9c, #1e90e0 55%, #7fdcff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-brand:focus-visible,
+.nav-link:focus-visible,
+.nav-sublink:focus-visible,
+.nav-toggle:focus-visible {
+    outline: 2px solid var(--nav-spark);
+    outline-offset: 2px;
+}
+
+/* ─── Menu (desktop) ─── */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    --nav-pad: clamp(0.55rem, 0.9vw, 1rem);
+    padding: 0.65rem var(--nav-pad);
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--nav-text);
+    font-family: inherit;
+    font-size: clamp(1.12rem, 0.5vw + 0.81rem, 1.38rem);
+    /* about 19px at 1280px wide */
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.nav-caret {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    color: var(--nav-text);
+    opacity: 0.8;
+    transition: transform 0.25s ease;
+}
+
+.nav-dropdown-toggle[aria-expanded="true"] .nav-caret {
+    transform: rotate(180deg);
+}
+
+/* Hover / focus / open: a crisp blue line, exactly as wide as the link's text, grows out from the center */
+.nav-link::before {
+    content: '';
+    position: absolute;
+    left: var(--nav-pad);
+    right: var(--nav-pad);
+    bottom: 5px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--nav-accent);
+    box-shadow: 0 0 6px rgba(63, 182, 255, 0.45);
+    transform: scaleX(0);
+    transition: transform 0.28s ease;
+}
+
+.nav-link:hover::before,
+.nav-link:focus-visible::before,
+.nav-dropdown-toggle[aria-expanded="true"]::before {
+    transform: scaleX(1);
+}
+
+/* Current page: a small glowing yellow star underneath ("you are here") */
+.nav-link[aria-current="page"]::after,
+.nav-link.is-current-parent::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 1px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--nav-spark);
+    box-shadow: 0 0 8px 2px var(--nav-spark);
+    transform: translateX(-50%);
+}
+
+/* ══════════════════════════════════════
+   THE LETTERING: bold, with yellow sparkles twinkling inside the letters.
+   The words are drawn twice more on top of themselves (from data-text), each copy filled
+   with yellow glints instead of a color, so the glints only show inside the letters.
+   The two copies twinkle at different moments, so the sparkles seem to hop around.
+══════════════════════════════════════ */
+
+.nav-text {
+    position: relative;
+    display: inline-block;
+    font-weight: 500;
+    letter-spacing: 0.035em;
+    line-height: 1.25;
+    color: var(--nav-text);
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover .nav-text,
+.nav-link:focus-visible .nav-text,
+.nav-sublink:hover .nav-text,
+.nav-sublink:focus-visible .nav-text {
+    color: #ffffff;
+}
+
+.nav-text::before,
+.nav-text::after {
+    content: attr(data-text);
+    content: attr(data-text) / "";
+    /* hides the duplicate from screen readers where supported */
+    position: absolute;
+    inset: 0;
+    white-space: nowrap;
+    pointer-events: none;
+    text-shadow: none;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Two layers of tiny starlight specks. Each layer is a small tile of crisp dots that repeats and
+   slowly drifts across the letters while it twinkles, so the specks seem to glint as they pass.
+   The layers use different tile sizes and directions, so the pattern never looks repeated. */
+.nav-text::before {
+    background-image:
+        radial-gradient(circle 1.9px at 4px 6px, #ffd23f 0 60%, transparent 100%),
+        radial-gradient(circle 1.5px at 13px 17px, #fff3a8 0 60%, transparent 100%),
+        radial-gradient(circle 2.2px at 22px 5px, #ffc21f 0 60%, transparent 100%),
+        radial-gradient(circle 1.6px at 31px 14px, #ffe36a 0 60%, transparent 100%),
+        radial-gradient(circle 1.9px at 9px 24px, #ffd23f 0 60%, transparent 100%),
+        radial-gradient(circle 1.5px at 27px 23px, #fff3a8 0 60%, transparent 100%),
+        radial-gradient(circle 1.7px at 36px 3px, #ffc21f 0 60%, transparent 100%),
+        radial-gradient(circle 1.4px at 18px 11px, #ffe36a 0 60%, transparent 100%);
+    background-size: 40px 26px;
+    animation:
+        speckTwinkle 2.8s ease-in-out var(--delay, 0s) infinite,
+        speckDriftA 14s linear infinite;
+}
+
+.nav-text::after {
+    background-image:
+        radial-gradient(circle 1.7px at 4px 12px, #fff3a8 0 60%, transparent 100%),
+        radial-gradient(circle 2px at 14px 3px, #ffd23f 0 60%, transparent 100%),
+        radial-gradient(circle 1.5px at 22px 16px, #ffe36a 0 60%, transparent 100%),
+        radial-gradient(circle 1.9px at 8px 21px, #ffc21f 0 60%, transparent 100%),
+        radial-gradient(circle 1.6px at 25px 6px, #fff3a8 0 60%, transparent 100%),
+        radial-gradient(circle 1.4px at 17px 22px, #ffd23f 0 60%, transparent 100%);
+    background-size: 29px 24px;
+    animation:
+        speckTwinkle 2.8s ease-in-out calc(var(--delay, 0s) - 1.4s) infinite,
+        speckDriftB 19s linear infinite;
+}
+
+@keyframes speckTwinkle {
+
+    0%,
+    100% {
+        opacity: 0.25;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes speckDriftA {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 40px 26px;
+    }
+}
+
+@keyframes speckDriftB {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: -29px 24px;
+    }
+}
+
+/* Each word twinkles on its own schedule so the bar never pulses in sync */
+.nav-menu>li:nth-child(1) .nav-text {
+    --delay: -0.2s;
+}
+
+.nav-menu>li:nth-child(2) .nav-text {
+    --delay: -1.1s;
+}
+
+.nav-menu>li:nth-child(3) .nav-text {
+    --delay: -2.3s;
+}
+
+.nav-menu>li:nth-child(4) .nav-text {
+    --delay: -0.7s;
+}
+
+.nav-menu>li:nth-child(5) .nav-text {
+    --delay: -1.8s;
+}
+
+.nav-menu>li:nth-child(6) .nav-text {
+    --delay: -2.6s;
+}
+
+.nav-menu>li:nth-child(7) .nav-text {
+    --delay: -0.4s;
+}
+
+.nav-menu>li:nth-child(8) .nav-text {
+    --delay: -1.5s;
+}
+
+.nav-menu>li:nth-child(9) .nav-text {
+    --delay: -2.1s;
+}
+
+.nav-dropdown li:nth-child(2) .nav-text {
+    --delay: -1s;
+}
+
+.nav-dropdown li:nth-child(3) .nav-text {
+    --delay: -2s;
+}
+
+/* ─── Dropdown (Technology) ─── */
+.nav-dropdown {
+    position: absolute;
+    top: calc(100% + 14px);
+    left: 50%;
+    min-width: 220px;
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem;
+    border-radius: 18px;
+    /* Opaque-ish on purpose: a blurred panel inside a blurred bar doesn't blur in most browsers */
+    background: linear-gradient(180deg, rgba(14, 24, 62, 0.97), rgba(6, 10, 28, 0.98));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 18px 40px rgba(0, 0, 10, 0.55);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+}
+
+/* invisible bridge so the pointer can cross the gap without the menu closing */
+.nav-dropdown::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -16px;
+    height: 16px;
+}
+
+.has-dropdown.open .nav-dropdown {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.nav-sublink {
+    display: block;
+    padding: 0.75rem 1.1rem;
+    border-radius: 12px;
+    color: var(--nav-text);
+    font-size: 1.24rem;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.nav-sublink:hover,
+.nav-sublink:focus-visible,
+.nav-sublink[aria-current="page"] {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ─── Hamburger (hidden on desktop) ─── */
+.nav-toggle {
+    display: none;
+    width: 42px;
+    height: 42px;
+    flex: none;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.nav-toggle-bar {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: #f4eed8;
+    transition: transform 0.25s ease, opacity 0.2s ease;
+}
+
+.nav-glass.menu-open .nav-toggle-bar:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.nav-glass.menu-open .nav-toggle-bar:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-glass.menu-open .nav-toggle-bar:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ══ Tablet & phone: collapse into a menu ══ */
+@media (max-width: 1220px) {
+    .nav-toggle {
+        display: flex;
+    }
+
+    /* the menu drops straight out of the bar, full width */
+    .nav-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.15rem;
+        max-height: calc(100svh - 70px);
+        overflow-y: auto;
+        padding: 0.6rem clamp(0.6rem, 3vw, 1.5rem) 0.9rem;
+        border-radius: 0 0 24px 24px;
+        background: linear-gradient(180deg, rgba(14, 24, 62, 0.985), rgba(6, 10, 28, 0.99));
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 18px 40px rgba(0, 0, 10, 0.55);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-8px);
+        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    }
+
+    /* A different crop of the same photo; z-index -1 puts it above the menu's background but under its links */
+    .nav-menu::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        border-radius: inherit;
+        background:
+            linear-gradient(rgba(6, 13, 36, 0.5), rgba(6, 13, 36, 0.5)),
+            url('../images/space-background.jpg') 15% 80% / 1300px auto no-repeat;
+    }
+
+    .nav-glass.menu-open .nav-menu {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+
+    .nav-link {
+        width: 100%;
+        padding: 0.85rem 0.9rem;
+        border-radius: 14px;
+        font-size: 1.3rem;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus-visible,
+    .nav-dropdown-toggle[aria-expanded="true"] {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-dropdown-toggle {
+        justify-content: flex-start;
+    }
+
+    .nav-dropdown-toggle .nav-caret {
+        margin-left: auto;
+    }
+
+    /* the underline trail doesn't suit a vertical list */
+    .nav-link::before {
+        display: none;
+    }
+
+    /* "you are here" dot moves to the right edge in the vertical list */
+    .nav-link[aria-current="page"]::after,
+    .nav-link.is-current-parent::after {
+        left: auto;
+        right: 0.9rem;
+        bottom: 50%;
+        transform: translateY(50%);
+    }
+
+    .nav-link.is-current-parent .nav-caret {
+        margin-right: 1.1rem;
+    }
+
+    /* Technology expands inline instead of floating */
+    .nav-dropdown {
+        position: static;
+        min-width: 0;
+        max-height: 0;
+        overflow: hidden;
+        padding: 0 0 0 1.1rem;
+        border: 0;
+        border-radius: 0;
+        background: none;
+        box-shadow: none;
+        opacity: 1;
+        visibility: hidden;
+        pointer-events: auto;
+        transform: none;
+        transition: max-height 0.3s ease, visibility 0.3s;
+    }
+
+    .nav-dropdown::before {
+        display: none;
+    }
+
+    .has-dropdown.open .nav-dropdown {
+        max-height: 240px;
+        visibility: visible;
+        padding-bottom: 0.3rem;
+        transform: none;
+    }
+
+    .nav-sublink {
+        padding: 0.8rem 0.9rem;
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .nav-brand-text {
+        font-size: 1.15rem;
+        letter-spacing: 0.12em;
+    }
+}
+
+/* Calm everything down for visitors who ask for less motion: keep one still set of glints */
+@media (prefers-reduced-motion: reduce) {
+    .nav-text::before {
+        animation: none;
+        opacity: 0.85;
+    }
+
+    .nav-text::after {
+        display: none;
+    }
+
+    .nav-caret,
+    .nav-dropdown,
+    .nav-menu,
+    .nav-toggle-bar {
+        transition: none;
+    }
+}

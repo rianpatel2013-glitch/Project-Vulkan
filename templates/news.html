@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Oceanus</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/news.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
+
+    <script src="{{ url_for('static', filename='js/navbar.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/news.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}" data-endpoint="{{ url_for('api_chat') }}"
+        defer></script>
+</head>
+
+<body>
+    {% include 'navbar.html' %}
+
+    <main class="news">
+
+        <header class="news-head">
+            <h1 class="news-title">Space <em>News</em></h1>
+            <p class="news-sub">The latest from the world of spaceflight, from rocket launches to missions to Titan.</p>
+
+            <form class="news-tools" id="newsForm" role="search">
+                <label class="visually-hidden" for="newsSearch">Search articles</label>
+                <input class="news-search" id="newsSearch" type="search" placeholder="Search, like Starship or Dragonfly"
+                    autocomplete="off">
+                <button class="news-chip" id="featuredBtn" type="button" aria-pressed="false">Featured only</button>
+            </form>
+        </header>
+
+        <p class="news-status" id="newsStatus" role="status" aria-live="polite"></p>
+
+        <section id="newsLead" aria-label="Top story"></section>
+
+        <h2 class="visually-hidden">More articles</h2>
+        <ul class="news-grid" id="newsGrid"></ul>
+
+        <div class="news-more-wrap">
+            <button class="news-btn" id="newsMore" type="button" hidden>Load more</button>
+        </div>
+
+        <p class="news-credit">
+            Articles from the
+            <a href="https://spaceflightnewsapi.net" target="_blank" rel="noopener noreferrer">Spaceflight News API</a>.
+            Each story opens on the publisher's own site.
+        </p>
+
+    </main>
+
+</body>
+
+</html>

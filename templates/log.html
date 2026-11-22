@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#07152f">
+    <title>Project Oceanus</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/log.css') }}">
+    <script src="{{ url_for('static', filename='js/log.js') }}" defer></script>
+</head>
+
+
+<body>
+
+
+    <!-- Animated star background -->
+    <canvas id="stars" aria-hidden="true"></canvas>
+
+
+    <!-- Background glow effects -->
+    <div class="nebula nebula-one" aria-hidden="true"></div>
+    <div class="nebula nebula-two" aria-hidden="true"></div>
+
+
+    <!-- Website heading -->
+    <header class="hero">
+
+
+        <p class="eyebrow">
+            MISSION ARCHIVE · FLIGHT RECORDS
+        </p>
+
+
+        <h1>Flight <span>Log</span></h1>
+
+
+        <p class="subtitle">
+            A timeline of humanity’s boldest steps into the unknown.
+        </p>
+
+
+        <div class="hero-rule">
+            <span></span>
+            <i></i>
+            <span></span>
+        </div>
+
+
+    </header>
+
+
+    <!-- Timeline -->
+    <main>
+
+
+        <section class="timeline" aria-label="Flight log timeline">
+
+
+            <!-- Central timeline line -->
+            <div class="timeline-line" aria-hidden="true"></div>
+
+
+            <!-- Mission 1: Left side -->
+            <article class="event left" data-index="01">
+
+
+                <span class="node" aria-hidden="true"></span>
+
+
+                <div class="event-card featured">
+
+
+                    <div class="card-top">
+                        <span>MISSION 01</span>
+                        <span class="status">RESEARCH</span>
+                    </div>
+
+
+                    <h2>Project Oceanus</h2>
+
+
+                    <p>
+                        Gaining funding and researching space shuttles,
+                        fuel, and the limitations of the human body to
+                        bring them to planets as far and Neptune.
+                    </p>
+
+
+                    <div class="card-bottom">
+                        <span>DEEP SPACE PROGRAM</span>
+                        <span class="arrow">↗</span>
+                    </div>
+
+
+                </div>
+            </article>
+
+
+            <!-- Mission 2: Right side -->
+            <article class="event right" data-index="02">
+
+
+                <span class="node" aria-hidden="true"></span>
+
+
+                <div class="event-card">
+
+
+                    <div class="card-top">
+                        <span>MISSION 02</span>
+                        <span class="status">LAUNCH</span>
+                    </div>
+
+
+                    <h2>Spire Launch I</h2>
+
+
+                    <p>
+                        Sending humans into space for a three-human
+                        space expedition, from earth, to the moon,
+                        and back.
+                    </p>
+
+
+                    <div class="card-bottom">
+                        <span>CREWED EXPEDITION</span>
+                        <span class="arrow">↗</span>
+                    </div>
+
+
+                </div>
+            </article>
+
+
+            <!-- Mission 3: Left side -->
+            <article class="event left" data-index="03">
+
+
+                <span class="node" aria-hidden="true"></span>
+
+
+                <div class="event-card">
+
+
+                    <div class="card-top">
+                        <span>MISSION 03</span>
+                        <span class="status">TEST FLIGHT</span>
+                    </div>
+
+
+                    <h2>Arc Launch</h2>
+
+
+                    <p>
+                        Their first attempt at shooting and keeping
+                        an object into space, fuel ran to keep it
+                        moving at a steady pace of 10 miles an hour
+                        for a minimum of 12 months using an Ion engine.
+                    </p>
+
+
+                    <div class="card-bottom">
+                        <span>ION PROPULSION</span>
+                        <span class="arrow">↗</span>
+                    </div>
+
+
+                </div>
+            </article>
+
+
+            <!-- Mission 4: Right side -->
+            <article class="event right" data-index="04">
+
+
+                <span class="node" aria-hidden="true"></span>
+
+
+                <div class="event-card">
+
+
+                    <div class="card-top">
+                        <span>MISSION 04</span>
+                        <span class="status">ATMOSPHERIC</span>
+                    </div>
+
+
+                    <h2>Aether Test Launch</h2>
+
+
+                    <p>
+                        Their first attempt at breaking the atmosphere.
+                    </p>
+
+
+                    <div class="card-bottom">
+                        <span>ATMOSPHERE STUDY</span>
+                        <span class="arrow">↗</span>
+                    </div>
+
+
+                </div>
+            </article>
+
+
+        </section>
+
+
+        <!-- Footer -->
+        <footer>
+            <span class="footer-mark">✦</span>
+
+
+            <p>
+                FLIGHT LOG
+                <span>•</span>
+                EXPLORATION NEVER ENDS
+            </p>
+
+
+            <span class="footer-mark">✦</span>
+        </footer>
+
+
+    </main>
+</body>
+</html>

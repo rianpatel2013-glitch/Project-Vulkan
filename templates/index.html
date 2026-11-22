@@ -1,241 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-    <meta name="theme-color" content="#07152f">
     <title>Project Oceanus</title>
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
 
-    <!-- Link to CSS stylesheet -->
-    <link rel="stylesheet" href="style.css">
+    <script src="{{ url_for('static', filename='js/navbar.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/home.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}" data-endpoint="{{ url_for('api_chat') }}"
+        defer></script>
 </head>
 
-
 <body>
+    {% include 'navbar.html' %}
 
-
-    <!-- Animated star background -->
-    <canvas id="stars" aria-hidden="true"></canvas>
-
-
-    <!-- Background glow effects -->
-    <div class="nebula nebula-one" aria-hidden="true"></div>
-    <div class="nebula nebula-two" aria-hidden="true"></div>
-
-
-    <!-- Website heading -->
-    <header class="hero">
-
-
-        <p class="eyebrow">
-            MISSION ARCHIVE · FLIGHT RECORDS
-        </p>
-
-
-        <h1>Flight <span>Log</span></h1>
-
-
-        <p class="subtitle">
-            A timeline of humanity’s boldest steps into the unknown.
-        </p>
-
-
-        <div class="hero-rule">
-            <span></span>
-            <i></i>
-            <span></span>
-        </div>
-
-
-    </header>
-
-
-    <!-- Timeline -->
     <main>
 
+        <!-- Tall track: scrolling through it drives the transition while the stage stays pinned -->
+        <div class="stage-track" id="stageTrack">
+            <div class="stage" id="stage">
 
-        <section class="timeline" aria-label="Flight log timeline">
-
-
-            <!-- Central timeline line -->
-            <div class="timeline-line" aria-hidden="true"></div>
-
-
-            <!-- Mission 1: Left side -->
-            <article class="event left" data-index="01">
-
-
-                <span class="node" aria-hidden="true"></span>
-
-
-                <div class="event-card featured">
-
-
-                    <div class="card-top">
-                        <span>MISSION 01</span>
-                        <span class="status">RESEARCH</span>
+                <!-- ══ HERO ══ -->
+                <section class="hero" id="hero">
+                    <div class="hero-bg">
+                        <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto">
+                            <source src="{{ url_for('static', filename='videos/rocket-launch.mp4') }}" type="video/mp4">
+                        </video>
+                        <div class="hero-overlay"></div>
                     </div>
 
-
-                    <h2>Project Oceanus</h2>
-
-
-                    <p>
-                        Gaining funding and researching space shuttles,
-                        fuel, and the limitations of the human body to
-                        bring them to planets as far and Neptune.
-                    </p>
-
-
-                    <div class="card-bottom">
-                        <span>DEEP SPACE PROGRAM</span>
-                        <span class="arrow">↗</span>
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Project<br><em>Oceanus</em>
+                        </h1>
+                        <p class="hero-subtitle">
+                            <b>Mission Brief:</b> Send the first people to Titan, Saturn's largest moon, build a
+                            settlement as our base of operations, recover the Huygens probe (the only spacecraft ever
+                            to land there), and research Titan's thick atmosphere and methane seas to find a way for
+                            humans to live there.
+                        </p>
+                        <button class="sound-btn" id="soundBtn" type="button" aria-pressed="false">
+                            🔇 Tap for sound
+                        </button>
                     </div>
 
+                    <button class="scroll-cue" id="scrollCue" type="button" aria-label="Scroll down">
+                        <span class="scroll-cue-text">Scroll down</span>
+                        <span class="scroll-cue-arrow" aria-hidden="true">↓</span>
+                    </button>
+                </section>
 
-                </div>
-            </article>
-
-
-            <!-- Mission 2: Right side -->
-            <article class="event right" data-index="02">
-
-
-                <span class="node" aria-hidden="true"></span>
-
-
-                <div class="event-card">
-
-
-                    <div class="card-top">
-                        <span>MISSION 02</span>
-                        <span class="status">LAUNCH</span>
+                <!-- ══ SHOWCASE (slideshow + shrinking rocket) ══ -->
+                <section class="showcase" id="showcase" aria-label="Mission image slideshow">
+                    <div class="slides">
+                        {% for i in range(1, 11) %}
+                        <img class="slide{{ ' active' if i == 1 else '' }}"
+                            src="{{ url_for('static', filename='images/slides/slide-' ~ i ~ '.jpg') }}"
+                            alt="Mission image {{ i }}">
+                        {% endfor %}
                     </div>
 
+                    <img class="rocket" id="rocket" src="{{ url_for('static', filename='images/rocket.png') }}" alt=""
+                        aria-hidden="true">
 
-                    <h2>Spire Launch I</h2>
+                    <button class="slide-arrow slide-arrow-prev" id="slidePrev" type="button"
+                        aria-label="Previous image">&#10094;</button>
+                    <button class="slide-arrow slide-arrow-next" id="slideNext" type="button"
+                        aria-label="Next image">&#10095;</button>
 
-
-                    <p>
-                        Sending humans into space for a three-human
-                        space expedition, from earth, to the moon,
-                        and back.
-                    </p>
-
-
-                    <div class="card-bottom">
-                        <span>CREWED EXPEDITION</span>
-                        <span class="arrow">↗</span>
+                    <div class="slide-dots" id="slideDots">
+                        {% for i in range(1, 11) %}
+                        <button class="slide-dot" type="button" aria-label="Go to image {{ i }}"></button>
+                        {% endfor %}
                     </div>
+                </section>
 
-
-                </div>
-            </article>
-
-
-            <!-- Mission 3: Left side -->
-            <article class="event left" data-index="03">
-
-
-                <span class="node" aria-hidden="true"></span>
-
-
-                <div class="event-card">
-
-
-                    <div class="card-top">
-                        <span>MISSION 03</span>
-                        <span class="status">TEST FLIGHT</span>
-                    </div>
-
-
-                    <h2>Arc Launch</h2>
-
-
-                    <p>
-                        Their first attempt at shooting and keeping
-                        an object into space, fuel ran to keep it
-                        moving at a steady pace of 10 miles an hour
-                        for a minimum of 12 months using an Ion engine.
-                    </p>
-
-
-                    <div class="card-bottom">
-                        <span>ION PROPULSION</span>
-                        <span class="arrow">↗</span>
-                    </div>
-
-
-                </div>
-            </article>
-
-
-            <!-- Mission 4: Right side -->
-            <article class="event right" data-index="04">
-
-
-                <span class="node" aria-hidden="true"></span>
-
-
-                <div class="event-card">
-
-
-                    <div class="card-top">
-                        <span>MISSION 04</span>
-                        <span class="status">ATMOSPHERIC</span>
-                    </div>
-
-
-                    <h2>Aether Test Launch</h2>
-
-
-                    <p>
-                        Their first attempt at breaking the atmosphere.
-                    </p>
-
-
-                    <div class="card-bottom">
-                        <span>ATMOSPHERE STUDY</span>
-                        <span class="arrow">↗</span>
-                    </div>
-
-
-                </div>
-            </article>
-
-
-        </section>
-
-
-        <!-- Footer -->
-        <footer>
-            <span class="footer-mark">✦</span>
-
-
-            <p>
-                FLIGHT LOG
-                <span>•</span>
-                EXPLORATION NEVER ENDS
-            </p>
-
-
-            <span class="footer-mark">✦</span>
-        </footer>
-
+            </div>
+        </div>
 
     </main>
 
-
-    <!-- Link to JavaScript -->
-    <script src="script.js"></script>
-
-
-    <link rel="stylesheet" href="Flight-log.css">
-<script src="Flight-log.js" defer></script>
-
-
 </body>
+
 </html>
